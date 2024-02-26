@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "@flaticon/flaticon-uicons/css/all/all";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    * {
+        @apply m-0 p-0 box-border text-base outline-purple/30 duration-100;
+    }
+
+    html{
+        @apply overflow-x-hidden;
+    }
+
+    body {
+        @apply font-opensans font-normal text-black;
+    }
+
+    i {
+        @apply mt-0.5;
+    }
+
+    ::selection {
+        @apply bg-purple/30;
+    }
+
+    img{
+        @apply w-full h-full object-cover;
+    }
+
+    .h-cover{
+        @apply min-h-[calc(100vh-80px)];
+    }
+
+    .form-border {
+        margin-bottom: 20px;
+        background-color: #ffffff;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    #root {
+        @apply mx-0 p-0 h-auto;
+    }
+}
+
+@layer utilities {
+    .bg {
+        background-position: 50%;
+        background-size: 34px auto;
+        padding: 10px;
+        margin: 8px 10px 8px 0;
+    }
+}
+
+.ce-block__content, .ce-toolbar__content{
+    max-width: 900px;
+}
+
+.cdx-settings-button[data-tune='withBorder'],
+.cdx-settings-button[data-tune='withBackground'],
+.cdx-settings-button[data-tune='stretched'] {
+  display: none;
+}
