@@ -16,12 +16,9 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .idea
-<<<<<<< HEAD
 request.rest
 requests.rest
 .env
-=======
->>>>>>> efc0216 (Create .gitignore)
 .DS_Store
 *.suo
 *.ntvs*
