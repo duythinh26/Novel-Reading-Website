@@ -18,6 +18,7 @@ dist-ssr
 .idea
 <<<<<<< HEAD
 request.rest
+requests.rest
 .env
 =======
 >>>>>>> efc0216 (Create .gitignore)
