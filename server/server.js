@@ -34,16 +34,6 @@ const formatDatatoSend = (user) => {
     }
 }
 
-// const generateUsername = async (email) => {
-//     let username = email.split("@")[0];
-
-//     let isUsernameNotUnique = await User.exists({ "personal_info.username": username}).then((result) => result);
-
-//     isUsernameNotUnique ? username += nanoid().substring(0, 3) : "";
-    
-//     return username;
-// }
-
 server.post("/signup", async (req, res) => {
     let { username, email, password } = req.body;
 
@@ -69,8 +59,7 @@ server.post("/signup", async (req, res) => {
         return res.status(403).json({ "error": "Mật khẩu từ 8 tới 20 ký tự và có ít nhất một chữ in hoa và một chữ số" });
     }
 
-    bcrypt.hash(password, 10, (err, hashed_password) => {    
-        // let username = await generateUsername(email);
+    bcrypt.hash(password, 10, (err, hashed_password) => {
         
         let user = new User({
             personal_info: {
@@ -83,6 +72,18 @@ server.post("/signup", async (req, res) => {
             return res.status(200).json(formatDatatoSend(u))
         })
         .catch(err => {
+            // When MongoDB catch a duplication error, it throw out error code 11000
+            if (err.code === 11000) {
+                const duplicateKey = Object.keys(err.keyPattern)[0];
+
+                if (duplicateKey === "personal_info.email") {
+                    return res.status(403).json({ error: "Email đã tồn tại" });
+                } 
+                else if (duplicateKey === "personal_info.username") {
+                    return res.status(403).json({ error: "Tên đăng nhập đã tồn tại" });
+                }
+            }
+
             return res.status(500).json({ "error": err.message })
         }) 
     })

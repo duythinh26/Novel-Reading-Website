@@ -5,6 +5,7 @@ import { Toaster, toast } from "react-hot-toast" // Using for create a pop up al
 import axios from "axios"
 
 const AuthPage = ({ type }) => {
+    const authForm = useRef()
 
     const userAuthToServer = (serverRoute, formData) => {
         console.log("Server:", import.meta.env.VITE_SERVER_DOMAIN + serverRoute)
@@ -14,10 +15,9 @@ const AuthPage = ({ type }) => {
             console.log("Data:", data)
             type == "signin" ? toast.success("Đăng nhập thành công!") : toast.success("Đăng ký thành công!")
         })
-        .catch(({ err }) => {
-            toast.error(err.data.error)
+        .catch(({ response }) => {
+            toast.error(response.data.error)
         })
-        console.log("Finish user auth")
     }
 
     // The e allow access to mouse/event information
@@ -29,7 +29,7 @@ const AuthPage = ({ type }) => {
         console.log("Route:", route)
 
         // Access the form
-        let form = new FormData(formElement)
+        let form = new FormData(authForm.current)
         let formData = {}
         let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
         let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/; 
@@ -68,14 +68,13 @@ const AuthPage = ({ type }) => {
 
         // Send data to server
         userAuthToServer(route, formData)
-        console.log("Data has been sent to server")
     }
     
     return (
         <div className="container mx-auto">
             <section className="h-auto flex justify-center">
                 <Toaster/>
-                <form id="formElement" className="w-1/4 max-w-4xl form-border">
+                <form ref={authForm} className="w-1/4 max-w-4xl form-border">
                     <div className="text-3xl font-gelasio text-center border-b-[#dddddd] border-b border-solid bg-neutral-100 px-[15px] py-[10px]">
                         {type == "signin" ? "Đăng nhập" : "Đăng ký"}
                     </div>
