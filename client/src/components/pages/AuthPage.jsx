@@ -1,11 +1,81 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import InputBox from "../common/InputBox";
+import { Toaster, toast } from "react-hot-toast" // Using for create a pop up alert
+import axios from "axios"
 
 const AuthPage = ({ type }) => {
+
+    const userAuthToServer = (serverRoute, formData) => {
+        console.log("Server:", import.meta.env.VITE_SERVER_DOMAIN + serverRoute)
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
+        .then(({ data }) => {
+            console.log("Data:", data)
+            type == "signin" ? toast.success("Đăng nhập thành công!") : toast.success("Đăng ký thành công!")
+        })
+        .catch(({ err }) => {
+            toast.error(err.data.error)
+        })
+        console.log("Finish user auth")
+    }
+
+    // The e allow access to mouse/event information
+    const handleSubmit = (e) => {
+        // If not preventDefault, we can't validate data from user
+        e.preventDefault()
+
+        let route = type == "signin" ? "/signin" : "/signup"
+        console.log("Route:", route)
+
+        // Access the form
+        let form = new FormData(formElement)
+        let formData = {}
+        let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
+        let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/; 
+        
+        for (let [key, value] of form.entries()) { // form.entries() allow access to input in the form
+            formData[key] = value // key is the name attribute of the input
+        }
+        console.log(formData)
+
+        // Form validation
+        let { username, email, password } = formData
+
+        // Only check when username exists
+        if (username) {
+            if (username.length < 3) {
+                return toast.error("Tên tài khoản phải có ít nhất 3 ký tự")
+            }
+        }
+
+        // Check user input email or not
+        if (!email.length) {
+            return toast.error("Bạn chưa nhập email")
+        }
+
+        if (!emailRegex.test(email)) {
+            return toast.error("Email không hợp lệ")
+        }
+        
+        if (!password.length) {
+            return toast.error("Bạn chưa nhập mật khẩu" )
+        }
+
+        if (!passwordRegex.test(password)) {
+            return toast.error("Mật khẩu phải từ 8 đến 20 ký tự và có ít nhất một chữ viết hoa và một chữ số")
+        }
+
+        // Send data to server
+        userAuthToServer(route, formData)
+        console.log("Data has been sent to server")
+    }
+    
     return (
         <div className="container mx-auto">
             <section className="h-auto flex justify-center">
-                <form action="" className="w-1/4 max-w-4xl form-border">
+                <Toaster/>
+                <form id="formElement" className="w-1/4 max-w-4xl form-border">
                     <div className="text-3xl font-gelasio text-center border-b-[#dddddd] border-b border-solid bg-neutral-100 px-[15px] py-[10px]">
                         {type == "signin" ? "Đăng nhập" : "Đăng ký"}
                     </div>
@@ -17,7 +87,7 @@ const AuthPage = ({ type }) => {
                                     <div className="label">
                                         <span className="label-text text-[16px]">Tên tài khoản</span>
                                     </div>
-                                    <InputBox id="name" name="name" type="text" placeholder="Tên tài khoản của bạn"/> 
+                                    <InputBox id="name" name="username" type="text" placeholder="Tên tài khoản của bạn"/> 
                                 </>
 
                                 : ""
@@ -38,14 +108,17 @@ const AuthPage = ({ type }) => {
                                     <div className="label">
                                         <span className="label-text text-[16px]">Xác nhận mật khẩu</span>
                                     </div>
-                                    <InputBox id="password" name="password" type="password" placeholder="Xác nhận mật khẩu"/>  
+                                    <InputBox id="password_confirm" name="password_confirm" type="password" placeholder="Xác nhận mật khẩu"/>  
                                 </>
 
                                 : ""
                             }
                         </label>
                         
-                        <button type="submit" className="btn btn-neutral w-full text-[14px] mt-[5px] rounded-full text-white">
+                        <button 
+                            className="btn btn-neutral w-full text-[14px] mt-[5px] rounded-full text-white"
+                            type="submit" onClick={handleSubmit}
+                            >
                             {type == "signin" ? "Đăng nhập" : "Đăng ký"}
                         </button>
                         {

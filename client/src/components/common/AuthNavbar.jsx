@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 const AuthNavbar = () => {
 
     return (
-        <div className="bg-white-smoke left-0 top-0 w-full h-nav z-50 mb-5 container">
+        <div className="bg-white-smoke left-0 top-0 w-full h-nav z-50 mb-5">
             <div className="navbar h-nav min-h-full justify-center">
 
                 {/* Logo */}
