@@ -1,18 +1,25 @@
-import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useRef } from "react";
+import { Link, Navigate } from "react-router-dom";
 import InputBox from "../common/InputBox";
 import { Toaster, toast } from "react-hot-toast" // Using for create a pop up alert
 import axios from "axios"
+import { storeInSession } from "../common/Session";
+import { UserContext } from "../../App";
 
 const AuthPage = ({ type }) => {
     const authForm = useRef()
+    
+    // Get context created
+    let { userAuth: { access_token }, setUserAuth } = useContext(UserContext)
 
     const userAuthToServer = (serverRoute, formData) => {
-        console.log("Server:", import.meta.env.VITE_SERVER_DOMAIN + serverRoute)
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
         .then(({ data }) => {
-            console.log("Data:", data)
+            storeInSession("user", JSON.stringify(data)) // stringify convert object into string
+            
+            setUserAuth(data)
+
             type == "signin" ? toast.success("Đăng nhập thành công!") : toast.success("Đăng ký thành công!")
         })
         .catch(({ response }) => {
@@ -71,6 +78,8 @@ const AuthPage = ({ type }) => {
     }
     
     return (
+        access_token ? <Navigate to="/"/>
+        :
         <div className="container mx-auto">
             <section className="h-auto flex justify-center">
                 <Toaster/>
