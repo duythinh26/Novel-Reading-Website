@@ -58,6 +58,9 @@ const novelSchema = mongoose.Schema({
     draft: {
         type: Boolean,
         default: false
+    },
+    permission: {
+        
     }
 
 }, 
