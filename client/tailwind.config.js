@@ -35,29 +35,31 @@ export default {
                 opensans: ["Open Sans"],
                 gelasio: ["'Gelasio'", "serif"]
             },
-
             width: {
                 'logo': '60px',
+                'icon': '32px',
+                'user': '150px',
                 '80%': '80%',
             },
-
             height: {
                 'nav': '46px',
                 'search': '30px',
                 'logo': '30px',
+                'icon': '32px',
                 'input': '34px',
             },
-
             lineHeight: {
                 'nav': '46px',
                 'icon': '30px',
             },
-
             spacing: {
                 '10px': '10px',
                 '20px': '20px',
-                '46px': '46px'
+                '46px': '46px',
             },
+            padding: {
+                'nav': "46px",
+            }
         },
 
     },
