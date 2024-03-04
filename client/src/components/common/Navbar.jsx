@@ -51,28 +51,28 @@ const Navbar = () => {
                     <div className="flex w-3/4 h-nav">
                         <ul className="menu menu-horizontal flex-auto float-left m-0 p-0">
                             <li className="float-left h-nav">
-                                <Link to="/sang-tac" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <Link to="/editor" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
                                     <span>Sáng tác</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
                                 <Link to="/convert" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0"> 
-                                    <span>Convert</span>
+                                    <span>Dịch máy</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/xuat-ban" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
-                                    <span>Xuất bản</span>
-                                </Link>
-                            </li>
-                            <li className="float-left h-nav">
-                                <Link to="/thao-luan" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
-                                    <span>Thảo luận</span>
+                                <Link to="/them-truyen" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                    <span>Thêm truyện</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
                                 <Link to="/danh-sach" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
                                     <span>Danh sách</span>
+                                </Link>
+                            </li>
+                            <li className="float-left h-nav">
+                                <Link to="/thao-luan" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                    <span>Thảo luận</span>
                                 </Link>
                             </li>
                             <li className="h-nav">
