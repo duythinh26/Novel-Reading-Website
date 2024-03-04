@@ -1,6 +1,6 @@
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
 
 const InputBox = ({ name, type, id, value, placeholder}) => {
     const [passwordVisible, setPasswordVisible] = useState(false) //false means not showing the password at the beginning
