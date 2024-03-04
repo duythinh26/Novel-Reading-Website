@@ -1,9 +1,9 @@
-import React, { Route, Routes } from 'react-router-dom'
+import React, { createContext, useEffect, useState } from 'react'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/common/Navbar'
 import AuthNavbar from './components/common/AuthNavbar'
 import AuthPage from './components/pages/AuthPage'
-import { createContext, useEffect, useState } from 'react'
 import { lookInSession } from './components/common/Session'
 import Editor from './components/pages/Editor'
 
