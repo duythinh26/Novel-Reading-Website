@@ -7,6 +7,7 @@ export default {
             'white': '#FFFFFF',
             'black': '#242424',
             'grey': '#F3F3F3',
+            'gray': '#333333',
             'white-smoke' : '#F6F7F8',
             'dark-grey': '#6B6B6B',
             'red': '#FF4E4E',
@@ -18,6 +19,7 @@ export default {
             'silver': "#cccccc",
             'facebook': "#337ab7",
             'google': "#d9534f",
+            'gainsboro': "#dddddd",
         },
 
         fontSize: {
@@ -33,6 +35,7 @@ export default {
         extend: {
             fontFamily: {
                 opensans: ["Open Sans"],
+                rotobo: ["Roboto"],
                 gelasio: ["'Gelasio'", "serif"]
             },
             width: {
