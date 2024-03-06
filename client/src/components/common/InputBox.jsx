@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
-const InputBox = ({ name, type, id, value, placeholder}) => {
+const InputBox = ({ name, type, id, value, placeholder, classname }) => {
     const [passwordVisible, setPasswordVisible] = useState(false) //false means not showing the password at the beginning
 
     return (
-        <div className="relative">
+        <div className="relative mb-[10px]">
             <input 
                 type={
                     type == "password" ? 
@@ -18,7 +18,7 @@ const InputBox = ({ name, type, id, value, placeholder}) => {
                 id={id}
                 defaultValue={value}
                 placeholder={placeholder} 
-                className="input input-info w-full h-input border border-solid border-silver mb-[10px]"
+                className={classname}
             />
             
             {

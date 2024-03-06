@@ -95,7 +95,12 @@ const AuthPage = ({ type }) => {
                                     <div className="label">
                                         <span className="label-text text-[16px]">Tên tài khoản</span>
                                     </div>
-                                    <InputBox id="name" name="username" type="text" placeholder="Tên tài khoản của bạn"/> 
+                                    <InputBox 
+                                        id="name" 
+                                        name="username" 
+                                        type="text" 
+                                        placeholder="Tên tài khoản của bạn"
+                                        classname="input input-info w-full h-input border border-solid border-silver"/> 
                                 </>
 
                                 : ""
@@ -104,11 +109,21 @@ const AuthPage = ({ type }) => {
                             <div className="label">
                                 <span className="label-text text-[16px]">Địa chỉ Email</span>
                             </div>
-                            <InputBox id="email" name="email" type="email" placeholder="Vui lòng nhập địa chỉ Email"/> 
+                            <InputBox 
+                                id="email" 
+                                name="email" 
+                                type="email" 
+                                placeholder="Vui lòng nhập địa chỉ Email" 
+                                classname="input input-info w-full h-input border border-solid border-silver"/> 
                             <div className="label">
                                 <span className="label-text text-[16px]">Mật khẩu</span>
                             </div>
-                            <InputBox id="password" name="password" type="password" placeholder="Vui lòng nhập mật khẩu"/> 
+                            <InputBox 
+                                id="password" 
+                                name="password" 
+                                type="password" 
+                                placeholder="Vui lòng nhập mật khẩu" 
+                                classname="input input-info w-full h-input border border-solid border-silver"/> 
 
                             {
                                 type == "signup" ?
@@ -116,7 +131,12 @@ const AuthPage = ({ type }) => {
                                     <div className="label">
                                         <span className="label-text text-[16px]">Xác nhận mật khẩu</span>
                                     </div>
-                                    <InputBox id="password_confirm" name="password_confirm" type="password" placeholder="Xác nhận mật khẩu"/>  
+                                    <InputBox 
+                                        id="password_confirm" 
+                                        name="password_confirm" 
+                                        type="password" 
+                                        placeholder="Xác nhận mật khẩu"
+                                        classname="input input-info w-full h-input border border-solid border-silver"/>  
                                 </>
 
                                 : ""
