@@ -35,7 +35,6 @@ const Navbar = () => {
         <>
             <div className="bg-white-smoke fixed left-0 top-0 w-full h-nav z-50">
                 <div className="navbar h-nav min-h-full justify-center">
-
                     {/* Logo */}
                     <div className="float-left">
                         {/* Use the Link tag to not reloading the page when clicked
@@ -51,7 +50,7 @@ const Navbar = () => {
                     <div className="flex w-3/4 h-nav">
                         <ul className="menu menu-horizontal flex-auto float-left m-0 p-0">
                             <li className="float-left h-nav">
-                                <Link to="/editor" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <Link to="/sang-tac" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
                                     <span>Sáng tác</span>
                                 </Link>
                             </li>

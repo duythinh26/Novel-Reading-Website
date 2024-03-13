@@ -30,7 +30,6 @@ const App = () => {
           {/* Must using Outlet in Navbar to render element below */}
           <Route path='sang-tac' element={<h1 className="pt-nav">Sáng tác</h1>}/>
           <Route path='convert' element={<h1 className="pt-nav">Dịch máy</h1>}/>
-          <Route path='them-truyen' element={<h1 className="pt-nav">Dịch truyện</h1>}/>
           <Route path='thao-luan' element={<h1 className="pt-nav">Thảo luận</h1>}/>
           <Route path='danh-sach' element={<h1 className="pt-nav">Danh sách</h1>}/>
           <Route path='dang-truyen' element={<h1 className="pt-nav">Đăng truyện</h1>}/>
@@ -50,7 +49,7 @@ const App = () => {
             <AuthPage type="signup"/>
           </>
         }/>
-        <Route path='/editor' element={<Editor />}/>
+        <Route path='/them-truyen' element={<Editor />}/>
       </Routes>
     </UserContext.Provider>
   )

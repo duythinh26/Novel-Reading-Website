@@ -20,6 +20,8 @@ export default {
             'facebook': "#337ab7",
             'google': "#d9534f",
             'gainsboro': "#dddddd",
+            'silver': "#7f858a",
+            'seaweed': "#007a96",
         },
 
         fontSize: {
@@ -36,7 +38,7 @@ export default {
             fontFamily: {
                 opensans: ["Open Sans"],
                 rotobo: ["Roboto"],
-                gelasio: ["'Gelasio'", "serif"]
+                gelasio: ["'Gelasio'", "serif"],
             },
             width: {
                 'logo': '60px',

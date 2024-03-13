@@ -55,7 +55,7 @@ const UserNavigation = () => {
                     className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none"
                     onClick={signOutUser}
                 >
-                    <FontAwesomeIcon icon={faRightFromBracket} />Đăng xuất
+                    <FontAwesomeIcon icon={faRightFromBracket} /> Đăng xuất
                 </button>
             </li>
         </ul>
