@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import InputBox from "../common/InputBox";
 import { uploadImage } from './aws.jsx';
 import { Toaster, toast } from "react-hot-toast";
+import Select from 'react-select';
+import novelTypeOptions from './novelTypeOptions';
 
 const NovelEditor = () => {
 
@@ -219,6 +221,33 @@ const NovelEditor = () => {
                                                 type="text"
                                                 name="illustrator"
                                                 classname="input input-info w-full h-input border border-solid border-silver" />
+                                        </div>
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Loại truyện</label>
+                                        <div className="float-left lg:w-2/3 px-4">
+                                            <select name="type" id="select-type" className='select select-bordered w-44 text-base px-[10px] py-[5px] leading-normal border-black focus:outline-none focus:border-black'>
+                                                <option value="1" selected>Truyện dịch</option>
+                                                <option value="2">Truyện convert</option>
+                                                <option value="3">Truyện sáng tác</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Thể loại</label>
+                                        <div className="lg:float-left lg:w-2/3 px-4">
+                                            <Select
+                                                isMulti
+                                                options={novelTypeOptions}
+                                                placeholder=""
+                                                className='border border-solid rounded-md border-silver'
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tóm tắt</label>
+                                        <div className="float-left lg:w-2/3 px-4">
+                                            
                                         </div>
                                     </div>
                                 </form>

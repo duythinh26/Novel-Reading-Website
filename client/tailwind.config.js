@@ -50,12 +50,14 @@ export default {
                 'nav': '46px',
                 'search': '30px',
                 'logo': '30px',
+                'select': '30px',
                 'icon': '32px',
                 'input': '34px',
             },
             lineHeight: {
                 'nav': '46px',
                 'icon': '30px',
+                'select': '30px'
             },
             spacing: {
                 '10px': '10px',
