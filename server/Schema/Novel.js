@@ -7,28 +7,56 @@ const novelSchema = mongoose.Schema({
         required: true,
         unique: true,
     },
-    title: {
+    novel_title: {
         type: String,
         required: true,
     },
-    banner: {
+    other_name: {
+        type: String
+    },
+    sensitive_content: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
+    novel_banner: {
         type: String,
         // required: true,
     },
-    des: {
-        type: String,
-        maxlength: 200,
-        // required: true
-    },
-    content: {
-        type: [],
-        // required: true
-    },
-    tags: {
-        type: [String],
-        // required: true
-    },
     author: {
+        type: [Schema.Types.ObjectId],
+        required: true,
+    },
+    artist: {
+        type: [Schema.Types.ObjectId],
+    },
+    type_of_novel: {
+        type: String,
+        enum: ["translate", "original", "converted"],
+        required: true,
+    },
+    categories: {
+        type: [String],
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    note: {
+        type: String,
+    },
+    status: {
+        type: String,
+        enum: ["ongoing", "pause", "finished"],
+        required: true,
+    },
+    episode: {
+        type: [Schema.Types.ObjectId],
+        // required: true,
+        ref: 'episodes',
+    },
+    poster: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'users'
@@ -60,15 +88,14 @@ const novelSchema = mongoose.Schema({
         default: false
     },
     permission: {
-        
+        type: Boolean,
+        default: false,
     }
-
 }, 
 { 
     timestamps: {
         createdAt: 'publishedAt'
     } 
-
 })
 
 export default mongoose.model("novels", novelSchema);

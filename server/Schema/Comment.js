@@ -2,15 +2,20 @@ import mongoose, { Schema } from "mongoose";
 
 const commentSchema = mongoose.Schema({
     
-    blog_id: {
+    novel_id: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'blogs'
+        ref: 'novels'
     },
-    blog_author: {
+    chapter_id: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'blogs',
+        ref: 'chapters'
+    },
+    novel_poster: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'novels',
     },
     comment: {
         type: String,
@@ -32,7 +37,6 @@ const commentSchema = mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'comments'
     }
-
 },
 {
     timestamps: {
