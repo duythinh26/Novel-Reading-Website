@@ -4,7 +4,8 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import jwt from "jsonwebtoken";
-import cors from "cors"
+import cors from "cors";
+import aws from "aws-sdk";
 
 import User from "./Schema/User.js";
 
@@ -23,6 +24,26 @@ mongoose.connect(process.env.DB_LOCATION, {
     autoIndex: true
 });
 
+// set up aws s3 bucket
+const s3 = new aws.S3({
+    region: 'ap-southeast-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+})
+
+// Generate a random upload url for front-end uploading
+const generateUploadURL = async () => {
+    const date = new Date();
+    const imageName = `${nanoid()}-${date.getTime()}.jpeg`;
+
+    return await s3.getSignedUrlPromise('putObject', {
+        Bucket: 'novel-publishing-and-reading-website',
+        Key: 'lightnovels/' + imageName,
+        Expires: 3000,
+        ContentType: "image/jpeg",
+    })
+}
+
 const formatDatatoSend = (user) => { 
     // Make an access token to verify user login
     const access_token = jwt.sign({ id: user._id }, process.env.SECRET_ACCESS_KEY);
@@ -33,6 +54,15 @@ const formatDatatoSend = (user) => {
         username: user.personal_info.username
     }
 }
+
+// Upload images url route
+server.get("/get-upload-url", (req, res) => {
+    generateUploadURL().then(url => res.status(200).json({ uploadURL: url }))
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message })
+    })
+})
 
 server.post("/signup", async (req, res) => {
     let { username, email, password } = req.body;
