@@ -1,4 +1,4 @@
-const novelTypeOptions = [
+const novelCategoriesOptions = [
     { value: "1", label: "Action" },
     { value: "49", label: "Adapted to Anime" },
     { value: "51", label: "Adapted to Drama CD" },
@@ -60,4 +60,4 @@ const novelTypeOptions = [
     { value: "48", label: "Yuri" },
 ]
 
-export default novelTypeOptions;
+export default novelCategoriesOptions;
