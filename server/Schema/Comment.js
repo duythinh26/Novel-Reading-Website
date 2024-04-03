@@ -22,7 +22,7 @@ const commentSchema = mongoose.Schema({
         required: true
     },
     children: {
-        type: [Schema.Types.ObjectId],
+        type: [ Schema.Types.ObjectId ],
         ref: 'comments'
     },
     commented_by: {

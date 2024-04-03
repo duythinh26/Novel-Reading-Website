@@ -24,15 +24,16 @@ const novelSchema = mongoose.Schema({
         // required: true,
     },
     author: {
-        type: [Schema.Types.ObjectId],
+        type: [String],
         required: true,
     },
     artist: {
-        type: [Schema.Types.ObjectId],
+        type: [String],
     },
     type_of_novel: {
         type: String,
         enum: ["translate", "original", "converted"],
+        default: "translate",
         required: true,
     },
     categories: {
@@ -49,14 +50,16 @@ const novelSchema = mongoose.Schema({
     status: {
         type: String,
         enum: ["ongoing", "pause", "finished"],
+        default: "ongoing",
         required: true,
     },
     episode: {
-        type: [Schema.Types.ObjectId],
+        type: [ Schema.Types.ObjectId ],
         // required: true,
         ref: 'episodes',
+        default: [],
     },
-    poster: {
+    publisher: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'users'
@@ -80,7 +83,7 @@ const novelSchema = mongoose.Schema({
         },
     },
     comments: {
-        type: [Schema.Types.ObjectId],
+        type: [ Schema.Types.ObjectId ],
         ref: 'comments'
     },
     draft: {

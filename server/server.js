@@ -8,6 +8,7 @@ import cors from "cors";
 import aws from "aws-sdk";
 
 import User from "./Schema/User.js";
+import Novel from "./Schema/Novel.js";
 
 const server = express();
 let PORT = 3000;
@@ -55,6 +56,24 @@ const formatDatatoSend = (user) => {
     }
 }
 
+const verifyJWT = (req, res, next) => {
+    const authHeaders = req.headers['authorization'];
+
+    const token = authHeaders && authHeaders.split(" ")[1];
+    if (token == null) {
+        return res.status(401).json({ error: "No access token"});
+    }
+
+    jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user) =>{
+        if (err) {
+            return res.status(403).json({ error: "Access token không khả dụng" });
+        }
+
+        req.user = user.id;
+        next();
+    });
+}
+
 // Upload images url route
 server.get("/get-upload-url", (req, res) => {
     generateUploadURL().then(url => res.status(200).json({ uploadURL: url }))
@@ -98,7 +117,6 @@ server.post("/signup", async (req, res) => {
         })
 
         user.save().then((u) => {
-            console.log("Finish format data")
             return res.status(200).json(formatDatatoSend(u))
         })
         .catch(err => {
@@ -146,6 +164,78 @@ server.post("/signin", (req, res) => {
     .catch(err => {
         console.log(err.message);
         return res.status(500).json({ "error": err.message });
+    })
+})
+
+server.post('/create-series', verifyJWT, (req, res) => {
+
+    let publisherId = req.user;
+
+    let {
+        novel_title, 
+        other_name,
+        sensitive_content,
+        banner,
+        author,
+        artist,
+        type_of_novel,
+        categories,
+        description,
+        note,
+        status,
+        episode,
+        draft
+    } = req.body;
+
+    if (!novel_title.length) {
+        return res.status(403).json({ error: "Truyện chưa có novel_title" });
+    }
+    
+    if (!author.length) {
+        return res.status(403).json({ error: "Truyện chưa có tác giả" });
+    }
+
+    if (!categories.length) {
+        return res.status(403).json({ error: "Truyện chưa có thể loại" });
+    }
+    
+    if (!description.length) {
+        return res.status(403).json({ error: "Truyện chưa có tóm tắt" });
+    }
+
+    let novel_id = novel_title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+
+    let novel = new Novel({
+        novel_id,
+        novel_title, 
+        other_name,
+        sensitive_content,
+        banner,
+        author,
+        artist,
+        type_of_novel,
+        categories,
+        description,
+        note,
+        status,
+        episode,
+        publisher: publisherId,
+        draft: Boolean(draft)
+    })
+
+    novel.save().then(novel => {
+        let incrementValue = draft ? 0 : 1;
+
+        User.findOneAndUpdate({ _id: publisherId }, { $inc: { "account_info.total_posts": incrementValue }, $push: { "novels": novel._id } })
+        .then(user => {
+            return res.status(200).json({ id: novel.novel_id });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: "Không thể cập nhật tổng số truyện đã đăng" });
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message });
     })
 })
 
