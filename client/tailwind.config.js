@@ -22,6 +22,10 @@ export default {
             'gainsboro': "#dddddd",
             'silver': "#7f858a",
             'seaweed': "#007a96",
+            'lapis': "#2e6da4",
+            'steel': "#337ab7",
+            'dazzled': "#286090",
+            'metallic': "#204d74"
         },
 
         fontSize: {
@@ -63,6 +67,7 @@ export default {
                 '10px': '10px',
                 '20px': '20px',
                 '46px': '46px',
+                '1/6': '16.66666667%'
             },
             padding: {
                 'nav': "46px",

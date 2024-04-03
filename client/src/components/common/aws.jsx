@@ -5,8 +5,6 @@ export const uploadImage = async (img) => {
 
     await axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/get-upload-url")
     .then( async ({ data: { uploadURL }}) => { // Destructor upload url
-
-        console.log("Upload Url:", uploadURL);
         
         await axios({
             method: 'PUT',

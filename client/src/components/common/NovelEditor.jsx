@@ -1,14 +1,56 @@
-import React, { useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import InputBox from "../common/InputBox";
 import { uploadImage } from './aws.jsx';
 import { Toaster, toast } from "react-hot-toast";
 import Select from 'react-select';
-import novelTypeOptions from './novelTypeOptions';
+import novelCategoriesOptions from './novelCategoriesOptions';
+import { NovelContext } from '../pages/Editor';
+import { Editor } from '@tinymce/tinymce-react';
 
 const NovelEditor = () => {
 
-    var novelCoverRef = useRef(); 
+    var novelTitleRef, novelCoverRef = useRef(); 
+    let { novel, novel: { 
+        novel_title, 
+        other_name, 
+        sensitive_content, 
+        novel_banner,
+        author,
+        artist,
+        type_of_novel,
+        categories,
+        description,
+        note,
+        status,
+        episode,
+        publisher,
+    }, setNovel } = useContext(NovelContext);
+
+    const handleTitleChange = (e) => {
+        let input = e.target;
+
+        /**
+         * Destructor the novel state
+         * 
+         * ...novel give the whole of a novel's data to access
+         * 
+         * title: input.value allow access to title and change value to the input value
+         */
+        setNovel({ ...novel, novel_title: input.value })
+    }
+
+    const handleOthernameChange = (e) => {
+        let input = e.target;
+
+        setNovel({ ...novel, other_name: input.value })
+    }
+
+    const handleMatureChange = (e) => {
+        let input = e.target;
+
+        setNovel({ ...novel, sensitive_content: input.checked})
+    }
 
     const handleBannerUpload = (e) => {
         let img = e.target.files[0];
@@ -16,14 +58,15 @@ const NovelEditor = () => {
         if (img) {
             let loadingToast = toast.loading("Bạn chờ tí nhé ...")
 
-            uploadImage(img)
-            .then((url) => {
+            uploadImage(img).then((url) => {
                 if (url) {
                     toast.dismiss(loadingToast);
                     toast.success("Đã đăng ảnh thành công!");
 
-                    novelCoverRef.current.src = url;
                     novelCoverRef.current.className = "block max-w-[100px] max-h-[100px] w-auto h-auto z-20";
+
+                    // Set novel banner to context
+                    setNovel({ ...novel, novel_banner: url });
                 }
             })
             .catch(err => {
@@ -32,6 +75,63 @@ const NovelEditor = () => {
             })
         }
     }
+
+    const handleAuthorChange = (e) => {
+        let input = e.target;
+
+        setNovel({ ...novel, author: input.value })
+    }
+
+    const handleArtistChange = (e) => {
+        setNovel({ ...novel, artist: e.target.value })
+    }
+
+    const handleTypeChange = (e) => {
+        setNovel({ ...novel, type_of_novel: e.target.selectedOptions[0].textContent})
+    }
+
+    const handleCategoriesChange = (e) => {
+        setNovel({ ...novel, categories: e.map(option => option.label)});
+    }
+
+    const handleDescriptionChange = (e) => {
+        setNovel({ ...novel, description: e.replace(/<p>(.*?)<\/p>/g, '$1')})
+    }
+
+    const handleNoteChange = (e) => {
+        setNovel({ ...novel, note: e.replace(/<p>(.*?)<\/p>/g, '$1')})
+    }
+
+    const handleStatusChange = (e) => {
+        setNovel({ ...novel, status: e.target.selectedOptions[0].textContent})
+    }
+
+    const handlePublishEvent = (e) => {
+
+        if (!novel_title.length) {
+            return toast.error("Chưa có tiêu đề bạn ơi!")
+        }
+
+        if (!author.length) {
+            return toast.error("Truyện gì mà không có tác giả à ?")
+        }
+
+        if (!categories.length) {
+            return toast.error("Truyện gì mà không có thể loại à ?")
+        }
+
+        if (!description.length) {
+            return toast.error("Thiếu tóm tắt của truyện rồi bạn ơi!")
+        }
+
+        console.log(novel)
+    }
+
+    // const handleImageError = (e) => {
+    //     let img = e.target;
+    //     img.src = "";
+    //     console.log(first)
+    // }
 
     // Close the open details when click to other details or click outside
     var details = [...document.querySelectorAll('details')];
@@ -59,55 +159,22 @@ const NovelEditor = () => {
                         <li>
                             <details className="dropdown">
                                 <summary className="h-nav content-center font-bold xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
-                                    Truyện dịch
+                                    Danh sách của bạn
                                 </summary>
                                 <ul className="rounded-t-none w-44 !p-0 !m-0 z-20">
                                     <li>
                                         <Link to="#" className="px-5 py-2.5">
-                                            Truyện đã đăng
+                                            Truyện dịch
                                         </Link>
                                     </li>
-                                    <li>
-                                        <Link to="/truyen-da-dang" className="px-5 py-2.5">
-                                            Truyện tham gia
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </details>
-                        </li>
-                        <li>
-                            <details className="dropdown">
-                                <summary className="h-nav content-center font-bold xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
-                                    Convert
-                                </summary>
-                                <ul className="rounded-t-none w-44 !p-0 !m-0 z-20">
                                     <li>
                                         <Link to="#" className="px-5 py-2.5">
-                                            Convert đã đăng
+                                            Truyện convert
                                         </Link>
                                     </li>
-                                    <li>
-                                        <Link to="/truyen-da-dang" className="px-5 py-2.5">
-                                            Convert tham gia
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </details>
-                        </li>
-                        <li>
-                            <details className="dropdown">
-                                <summary className="h-nav content-center font-bold xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
-                                    Sáng tác
-                                </summary>
-                                <ul className="rounded-t-none w-44 !p-0 !m-0 z-20">
                                     <li>
                                         <Link to="#" className="px-5 py-2.5">
-                                            OLN đã đăng
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/truyen-da-dang" className="px-5 py-2.5">
-                                            OLN tham gia
+                                            Truyện sáng tác
                                         </Link>
                                     </li>
                                 </ul>
@@ -125,7 +192,7 @@ const NovelEditor = () => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="/truyen-da-dang" className="px-5 py-2.5">
+                                        <Link to="#" className="px-5 py-2.5">
                                             Thảo luận của bạn
                                         </Link>
                                     </li>
@@ -144,7 +211,7 @@ const NovelEditor = () => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="/truyen-da-dang" className="px-5 py-2.5">
+                                        <Link to="#" className="px-5 py-2.5">
                                             Thư viện
                                         </Link>
                                     </li>
@@ -159,7 +226,7 @@ const NovelEditor = () => {
                 <div className="mx-[-15px]">
                     <div className="lg:mx-[10%] lg:w-5/6 lg:float-left relative min-h-[1px] px-[15px]">
                         <div className="bg-white border rounded mb-5 border-solid border-gainsboro">
-                            <div className="text-gray bg-neutral-100 border-gainsboro px-4 py-2.5 rounded-t border-b-gainsboro border-b border-solid">Editor</div>
+                            <div className="text-gray bg-neutral-100 border-gainsboro px-4 py-2.5 rounded-t border-b-gainsboro border-b border-solid">Series</div>
                             <div className="p-4">
                                 <form>
                                     {/* If an element is taller than the element containing it, and it is floated, it will overflow outside of its container.
@@ -167,20 +234,34 @@ const NovelEditor = () => {
                                     <div className="mb-[15px] clearfix">
                                         <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tiêu đề</label>
                                         <div className="float-left lg:w-2/3 px-4">
-                                            <InputBox 
+                                            <input 
                                                 type="text"
                                                 name="title"
-                                                classname="input input-info w-full h-input border border-solid border-silver" 
+                                                className="input input-info w-full h-input border border-solid border-silver"
+                                                onChange={handleTitleChange}
                                             />
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
                                         <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left'>Tên khác</label>
                                         <div className="float-left lg:w-2/3 px-4">
-                                            <InputBox 
+                                            <input 
                                                 type="text"
                                                 name="altname"
-                                                classname="input input-info w-full h-input border border-solid border-silver" 
+                                                className="input input-info w-full h-input border border-solid border-silver" 
+                                                onChange={handleOthernameChange}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left font-bold'>Nội dung nhạy cảm</label>
+                                        <div className="float-left lg:w-2/3 px-4">
+                                            <input 
+                                                type="checkbox" 
+                                                name='is_mature' 
+                                                value={1} 
+                                                className='mt-[9px]'
+                                                onChange={handleMatureChange}
                                             />
                                         </div>
                                     </div>
@@ -201,33 +282,47 @@ const NovelEditor = () => {
                                                     </label>
                                                 </div>
                                             </div>
-                                            <img ref={novelCoverRef} src={""} className='hidden'/>
+                                            <img 
+                                                ref={novelCoverRef} 
+                                                src={novel_banner} 
+                                                className='hidden' 
+                                                // onError={handleImageError}
+                                            />
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
                                         <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tác giả</label>
                                         <div className="float-left lg:w-2/3 px-4">
-                                            <InputBox 
+                                            <input 
                                                 type="text"
                                                 name="author"
-                                                classname="input input-info w-full h-input border border-solid border-silver" 
+                                                className="input input-info w-full h-input border border-solid border-silver"
+                                                onChange={handleAuthorChange}
                                             />
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
                                         <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left'>Họa sĩ</label>
                                         <div className="float-left lg:w-2/3 px-4">
-                                            <InputBox 
+                                            <input 
                                                 type="text"
                                                 name="illustrator"
-                                                classname="input input-info w-full h-input border border-solid border-silver" />
+                                                className="input input-info w-full h-input border border-solid border-silver" 
+                                                onChange={handleArtistChange}
+                                            />
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
                                         <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Loại truyện</label>
                                         <div className="float-left lg:w-2/3 px-4">
-                                            <select name="type" id="select-type" className='select select-bordered w-44 text-base px-[10px] py-[5px] leading-normal border-black focus:outline-none focus:border-black'>
-                                                <option value="1" selected>Truyện dịch</option>
+                                            <select 
+                                                name="type" 
+                                                id="select-type" 
+                                                defaultValue={1}
+                                                className='select select-bordered w-44 text-base px-[10px] py-[5px] leading-normal border-black focus:outline-none focus:border-black'
+                                                onChange={handleTypeChange}
+                                            >
+                                                <option value="1">Truyện dịch</option>
                                                 <option value="2">Truyện convert</option>
                                                 <option value="3">Truyện sáng tác</option>
                                             </select>
@@ -235,19 +330,84 @@ const NovelEditor = () => {
                                     </div>
                                     <div className="mb-[15px] clearfix">
                                         <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Thể loại</label>
-                                        <div className="lg:float-left lg:w-2/3 px-4">
+                                        <div className="lg:float-left lg:w-5/6 px-4">
                                             <Select
                                                 isMulti
-                                                options={novelTypeOptions}
+                                                options={novelCategoriesOptions}
                                                 placeholder=""
-                                                className='border border-solid rounded-md border-silver'
+                                                className='border border-solid rounded-md border-silver z-20'
+                                                onChange={handleCategoriesChange}
+                                            />
+                                        </div> 
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tóm tắt</label>
+                                        <div id='textEditor' className="float-left lg:w-5/6 px-4">
+                                            <Editor
+                                                apiKey = {import.meta.env.VITE_TINYMCE_API_KEY}
+                                                init={{
+                                                    plugins: 'anchor autolink charmap emoticons image link lists media searchreplace visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker permanentpen powerpaste editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags typography inlinecss fullscreen',
+                                                    toolbar: 'undo redo |  bold italic underline strikethrough | link image | addcomment showcomments | fullscreen | a11ycheck typography |  align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat |',
+                                                    tinycomments_mode: 'embedded',
+                                                    tinycomments_author: 'Author name',
+                                                    mergetags_list: [
+                                                        { value: 'First.Name', title: 'First Name' },
+                                                        { value: 'Email', title: 'Email' },
+                                                    ],
+                                                    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                                                    branding: false,
+                                                }}
+                                                onEditorChange={handleDescriptionChange}
                                             />
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
-                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tóm tắt</label>
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left'>Chú thích thêm</label>
+                                        <div id='textEditor' className="float-left lg:w-5/6 px-4">
+                                            <Editor
+                                                apiKey = {import.meta.env.VITE_TINYMCE_API_KEY}
+                                                init={{
+                                                    plugins: 'anchor autolink charmap emoticons image link lists media searchreplace visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker permanentpen powerpaste editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags typography inlinecss fullscreen',
+                                                    toolbar: 'undo redo |  bold italic underline strikethrough | link image | addcomment showcomments | fullscreen | a11ycheck typography |  align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat |',
+                                                    tinycomments_mode: 'embedded',
+                                                    tinycomments_author: 'Author name',
+                                                    mergetags_list: [
+                                                        { value: 'First.Name', title: 'First Name' },
+                                                        { value: 'Email', title: 'Email' },
+                                                    ],
+                                                    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                                                    branding: false,
+                                                }}
+                                                onEditorChange={handleNoteChange}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tình trạng dịch</label>
                                         <div className="float-left lg:w-2/3 px-4">
-                                            
+                                            <select 
+                                                name="type" 
+                                                id="select-type" 
+                                                defaultValue={1}
+                                                className='select select-bordered w-44 text-base px-[10px] py-[5px] leading-normal border-black focus:outline-none focus:border-black'
+                                                onChange={handleStatusChange}
+                                            >
+                                                <option value="1">Đang tiến hành</option>
+                                                <option value="2">Tạm ngưng</option>
+                                                <option value="3">Đã hoàn thành</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <div className="float-left lg:ml-1/6 lg:w-5/6 px-4">
+                                            <button 
+                                                type='button' // Default type of button is submit
+                                                className='btn btn-confirm text-white text-base'
+                                                onClick={handlePublishEvent}
+                                            >
+                                                Thêm truyện
+                                            </button>
+                                            <a href="javascript: history.back()" className='btn btn-warning text-base text-white ml-4'>Quay lại</a>
                                         </div>
                                     </div>
                                 </form>

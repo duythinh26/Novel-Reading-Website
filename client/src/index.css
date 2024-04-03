@@ -60,6 +60,14 @@
     #root {
         @apply mx-0 p-0 h-auto;
     }
+
+    .btn-confirm {
+        @apply bg-steel hover:bg-dazzled border-lapis hover:border-metallic;
+    }
+
+    .btn-getback {
+
+    }
 }
 
 @layer utilities {

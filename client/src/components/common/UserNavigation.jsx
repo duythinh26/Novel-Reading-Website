@@ -16,7 +16,7 @@ const UserNavigation = () => {
     }
 
     return (
-        <ul className="bg-white absolute w-user m-0 p-0 right-0 top-[46px]">
+        <ul className="bg-white absolute w-user m-0 p-0 right-0 top-[46px] z-20">
             <li>
                 <Link to={`/user/${username}`} className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none">
                     <FontAwesomeIcon icon={faUser} /> Tài khoản

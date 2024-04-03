@@ -49,7 +49,7 @@ const App = () => {
             <AuthPage type="signup"/>
           </>
         }/>
-        <Route path='/them-truyen' element={<Editor />}/>
+        <Route path='/series' element={<Editor />}/>
       </Routes>
     </UserContext.Provider>
   )
