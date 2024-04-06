@@ -32,8 +32,12 @@ const novelSchema = mongoose.Schema({
     },
     type_of_novel: {
         type: String,
-        enum: ["translate", "original", "converted"],
-        default: "translate",
+        enum: [
+            "Truyện dịch", 
+            "Truyện sáng tác", 
+            "Truyện convert"
+        ],
+        default: "Truyện dịch",
         required: true,
     },
     categories: {
@@ -49,8 +53,12 @@ const novelSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["ongoing", "pause", "finished"],
-        default: "ongoing",
+        enum: [
+            "Đang tiến hành", 
+            "Tạm ngưng", 
+            "Đã hoàn thành"
+        ],
+        default: "Đang tiến hành",
         required: true,
     },
     episode: {

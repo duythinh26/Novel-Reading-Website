@@ -218,7 +218,7 @@ server.post('/create-series', verifyJWT, (req, res) => {
         description,
         note,
         status,
-        episode,
+        // episode,
         publisher: publisherId,
         draft: Boolean(draft)
     })

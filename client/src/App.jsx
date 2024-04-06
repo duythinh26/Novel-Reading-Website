@@ -6,6 +6,8 @@ import AuthNavbar from './components/common/AuthNavbar'
 import AuthPage from './components/pages/AuthPage'
 import { lookInSession } from './components/common/Session'
 import Editor from './components/pages/Editor'
+import EditorNavbar from './components/common/EditorNavbar'
+import NovelEditor from './components/common/NovelEditor'
 
 export const UserContext = createContext({})
 
@@ -49,7 +51,12 @@ const App = () => {
             <AuthPage type="signup"/>
           </>
         }/>
-        <Route path='/series' element={<Editor />}/>
+        <Route path='/manage' element={<EditorNavbar />}/>
+        <Route path='/manage/series' element={
+          <>
+            <Editor />
+          </>
+        }/>
       </Routes>
     </UserContext.Provider>
   )

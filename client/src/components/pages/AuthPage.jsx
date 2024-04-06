@@ -33,7 +33,6 @@ const AuthPage = ({ type }) => {
         e.preventDefault()
 
         let route = type == "signin" ? "/signin" : "/signup"
-        console.log("Route:", route)
 
         // Access the form
         let form = new FormData(authForm.current)
@@ -44,7 +43,6 @@ const AuthPage = ({ type }) => {
         for (let [key, value] of form.entries()) { // form.entries() allow access to input in the form
             formData[key] = value // key is the name attribute of the input
         }
-        console.log(formData)
 
         // Form validation
         let { username, email, password } = formData

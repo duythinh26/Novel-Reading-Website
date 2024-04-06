@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 import { UserContext } from "../../App";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import NovelEditor from "../common/NovelEditor";
 import PublishForm from "../common/PublishForm";
+import EditorNavbar from "../common/EditorNavbar";
 
 // Create context the same as database
 const novelStructure = {
@@ -34,13 +35,19 @@ const Editor = () => {
     let { userAuth: { access_token }} = useContext(UserContext);
 
     return (
-        <NovelContext.Provider value={{ novel, setNovel }}>
-            {
-                access_token === null 
-                ? <Navigate to="/signin" /> 
-                : <NovelEditor />
-            }
-        </NovelContext.Provider>
+        <>
+            <NovelContext.Provider value={{ novel, setNovel }}>
+                {
+                    access_token === null 
+                    ? <Navigate to="/signin" /> 
+                    : 
+                    <>
+                        <NovelEditor />
+                    </>
+                }
+            </NovelContext.Provider>
+            <Outlet />
+        </>
     )
 }
 

@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import InputBox from "../common/InputBox";
+import { Link, useNavigate } from 'react-router-dom';
 import { uploadImage } from './aws.jsx';
 import { Toaster, toast } from "react-hot-toast";
 import Select from 'react-select';
 import novelCategoriesOptions from './novelCategoriesOptions';
 import { NovelContext } from '../pages/Editor';
 import { Editor } from '@tinymce/tinymce-react';
+import axios from 'axios';
+import { UserContext } from '../../App';
+import EditorNavbar from './EditorNavbar';
 
 const NovelEditor = () => {
 
@@ -26,6 +28,10 @@ const NovelEditor = () => {
         episode,
         publisher,
     }, setNovel } = useContext(NovelContext);
+
+    let { userAuth: { access_token } } = useContext(UserContext);
+
+    let navigate = useNavigate();
 
     const handleTitleChange = (e) => {
         let input = e.target;
@@ -108,23 +114,69 @@ const NovelEditor = () => {
 
     const handlePublishEvent = (e) => {
 
+        if (e.target.className.includes("btn-disabled")) {
+            return;
+        }
+
         if (!novel_title.length) {
-            return toast.error("Chưa có tiêu đề bạn ơi!")
+            return toast.error("Truyện đang thiếu tiêu đề")
         }
 
         if (!author.length) {
-            return toast.error("Truyện gì mà không có tác giả à ?")
+            return toast.error("Truyện đang thiếu tác giả")
         }
 
         if (!categories.length) {
-            return toast.error("Truyện gì mà không có thể loại à ?")
+            return toast.error("Truyện đang thiếu thể loại")
         }
 
         if (!description.length) {
-            return toast.error("Thiếu tóm tắt của truyện rồi bạn ơi!")
+            return toast.error("Truyện đang thiếu tóm tắt")
         }
 
-        console.log(novel)
+        let loadingToast = toast.loading("Bạn đợi chút nhé ...")
+
+        // Make disable button to prevent multiple data sent
+        e.target.classList.add("btn-disabled");
+
+        let novelObject = {
+            novel_title, 
+            other_name, 
+            sensitive_content, 
+            novel_banner,
+            author,
+            artist,
+            type_of_novel,
+            categories,
+            description,
+            note,
+            status,
+            episode,
+            draft: false
+        }
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-series", novelObject, {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(() => {
+            e.target.classList.remove("btn-disabled");
+
+            toast.dismiss(loadingToast);
+            toast.success("Đẫ tạo truyện thành công");
+
+            // After 500 miliseconds, navigate user to homepage
+            setTimeout(() => {
+                navigate("/")
+            }, 500);
+        })
+        .catch(( { response } ) => { // Must destructor the data to get the error if it has
+            e.target.classList.remove("btn-disabled");
+            toast.dismiss(loadingToast);
+            
+            return toast.error(response.data.error);
+        })
     }
 
     // const handleImageError = (e) => {
@@ -154,6 +206,11 @@ const NovelEditor = () => {
                             Use the a tag to reloading the page when clicked */}
                             <Link to="/" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
                                 <span>Trang chủ</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/manage" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <span>Dashboard</span>
                             </Link>
                         </li>
                         <li>
@@ -346,7 +403,7 @@ const NovelEditor = () => {
                                             <Editor
                                                 apiKey = {import.meta.env.VITE_TINYMCE_API_KEY}
                                                 init={{
-                                                    plugins: 'anchor autolink charmap emoticons image link lists media searchreplace visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker permanentpen powerpaste editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags typography inlinecss fullscreen',
+                                                    plugins: 'anchor autolink charmap emoticons image link lists media searchreplace visualblocks wordcount linkchecker fullscreen',
                                                     toolbar: 'undo redo |  bold italic underline strikethrough | link image | addcomment showcomments | fullscreen | a11ycheck typography |  align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat |',
                                                     tinycomments_mode: 'embedded',
                                                     tinycomments_author: 'Author name',
@@ -367,7 +424,7 @@ const NovelEditor = () => {
                                             <Editor
                                                 apiKey = {import.meta.env.VITE_TINYMCE_API_KEY}
                                                 init={{
-                                                    plugins: 'anchor autolink charmap emoticons image link lists media searchreplace visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker permanentpen powerpaste editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags typography inlinecss fullscreen',
+                                                    plugins: 'anchor autolink charmap emoticons image link lists media searchreplace visualblocks wordcount linkchecker fullscreen',
                                                     toolbar: 'undo redo |  bold italic underline strikethrough | link image | addcomment showcomments | fullscreen | a11ycheck typography |  align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat |',
                                                     tinycomments_mode: 'embedded',
                                                     tinycomments_author: 'Author name',

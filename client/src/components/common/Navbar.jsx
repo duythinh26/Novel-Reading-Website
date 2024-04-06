@@ -60,13 +60,13 @@ const Navbar = () => {
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/series" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
-                                    <span>Thêm truyện</span>
+                                <Link to="/danh-sach" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                    <span>Danh sách</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/danh-sach" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
-                                    <span>Danh sách</span>
+                                <Link to="/manage" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                    <span>Dashboard</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
