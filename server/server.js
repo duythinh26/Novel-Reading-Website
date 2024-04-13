@@ -167,6 +167,14 @@ server.post("/signin", (req, res) => {
     })
 })
 
+server.get("/latest-novels", (req, res) => {
+
+    Novel.find({ draft: false })
+    .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
+    .sort({ "updatedAt": -1 }) // -1 is give the lastest updatedAt variable in database
+    .select("novel_id novel_title description categories activity ")
+})
+
 server.post('/create-series', verifyJWT, (req, res) => {
 
     let publisherId = req.user;
@@ -175,7 +183,7 @@ server.post('/create-series', verifyJWT, (req, res) => {
         novel_title, 
         other_name,
         sensitive_content,
-        banner,
+        novel_banner,
         author,
         artist,
         type_of_novel,
@@ -205,12 +213,14 @@ server.post('/create-series', verifyJWT, (req, res) => {
 
     let novel_id = novel_title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
 
+    const r16 = !!sensitive_content;
+
     let novel = new Novel({
         novel_id,
         novel_title, 
         other_name,
-        sensitive_content,
-        banner,
+        sensitive_content: Boolean(sensitive_content),
+        novel_banner,
         author,
         artist,
         type_of_novel,
