@@ -65,7 +65,7 @@ const Navbar = () => {
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/manage" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <Link to="/dashboard" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
                                     <span>Dashboard</span>
                                 </Link>
                             </li>

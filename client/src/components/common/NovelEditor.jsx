@@ -168,7 +168,7 @@ const NovelEditor = () => {
 
             // After 500 miliseconds, navigate user to homepage
             setTimeout(() => {
-                navigate("/")
+                navigate("/dashboard")
             }, 500);
         })
         .catch(( { response } ) => { // Must destructor the data to get the error if it has
@@ -178,6 +178,57 @@ const NovelEditor = () => {
             return toast.error(response.data.error);
         })
     }
+
+    // const handleSaveDraft = (e) => {
+
+    //     if (e.target.className.includes("btn-disabled")) {
+    //         return;
+    //     }
+
+    //     let loadingToast = toast.loading("Bạn đợi chút nhé ...")
+
+    //     // Make disable button to prevent multiple data sent
+    //     e.target.classList.add("btn-disabled");
+
+    //     let novelObject = {
+    //         novel_title, 
+    //         other_name, 
+    //         sensitive_content, 
+    //         novel_banner,
+    //         author,
+    //         artist,
+    //         type_of_novel,
+    //         categories,
+    //         description,
+    //         note,
+    //         status,
+    //         episode,
+    //         draft: true
+    //     }
+
+    //     axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-series", novelObject, {
+    //         headers: {
+    //             'Authorization': `Bearer ${access_token}`
+    //         }
+    //     })
+    //     .then(() => {
+    //         e.target.classList.remove("btn-disabled");
+
+    //         toast.dismiss(loadingToast);
+    //         toast.success("Đẫ lưu nháp thành công");
+
+    //         // After 500 miliseconds, navigate user to homepage
+    //         setTimeout(() => {
+    //             navigate("/dashboard")
+    //         }, 500);
+    //     })
+    //     .catch(( { response } ) => { // Must destructor the data to get the error if it has
+    //         e.target.classList.remove("btn-disabled");
+    //         toast.dismiss(loadingToast);
+            
+    //         return toast.error(response.data.error);
+    //     })
+    // }
 
     // const handleImageError = (e) => {
     //     let img = e.target;
@@ -209,7 +260,7 @@ const NovelEditor = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/manage" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                            <Link to="/dashboard" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
                                 <span>Dashboard</span>
                             </Link>
                         </li>
@@ -463,6 +514,13 @@ const NovelEditor = () => {
                                                 onClick={handlePublishEvent}
                                             >
                                                 Thêm truyện
+                                            </button>
+                                            <button 
+                                                type='button'
+                                                className='btn btn-accent text-white text-base ml-4'
+                                                // onClick={handleSaveDraft}
+                                            >
+                                                Lưu nháp
                                             </button>
                                             <a href="javascript: history.back()" className='btn btn-warning text-base text-white ml-4'>Quay lại</a>
                                         </div>
