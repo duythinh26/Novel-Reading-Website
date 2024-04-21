@@ -25,7 +25,9 @@ export default {
             'lapis': "#2e6da4",
             'steel': "#337ab7",
             'dazzled': "#286090",
-            'metallic': "#204d74"
+            'metallic': "#204d74",
+            'green': "#10b18e",
+            'lightblack': "rgba(0,0,0,.4)",
         },
 
         fontSize: {
@@ -49,6 +51,7 @@ export default {
                 'icon': '32px',
                 'user': '150px',
                 '80%': '80%',
+                'items': 'calc(12.5%)',
             },
             height: {
                 'nav': '46px',
@@ -57,6 +60,7 @@ export default {
                 'select': '30px',
                 'icon': '32px',
                 'input': '34px',
+                'banner': '304.58px'
             },
             lineHeight: {
                 'nav': '46px',

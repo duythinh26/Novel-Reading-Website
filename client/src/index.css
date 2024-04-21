@@ -12,7 +12,7 @@
         @apply m-0 p-0 box-border text-base outline-purple/30 duration-100;
     }
 
-    html{
+    html {
         @apply overflow-x-hidden;
     }
 
@@ -28,12 +28,17 @@
         @apply bg-purple/30;
     }
 
-    img{
+    img {
         @apply w-full h-full object-cover;
     }
 
     label {
         @apply inline-block max-w-full mb-[5px];
+    }
+
+    a {
+        color: inherit;
+        text-decoration: inherit;
     }
 
     .h-cover{
@@ -54,7 +59,12 @@
 
     .clearfix {
         @apply content-[""] clear-both table;
-        
+    }
+
+    .cover-background {
+        background-position: 50%;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
     }
 
     #root {
@@ -65,9 +75,23 @@
         @apply bg-steel hover:bg-dazzled border-lapis hover:border-metallic;
     }
 
-    .btn-getback {
-
+    .transform3d {
+        transform: translate3d(0%, 0px, 0px);
     }
+
+    .top-view {
+        @apply w-[calc(400%)] md:w-[calc(266.667%)] lg:w-[calc(200%)];
+    }
+
+    .cover-detail {
+        background: linear-gradient(
+            180deg,
+            transparent 0,
+            rgba(0, 0, 0, 0.8) 67%,
+            rgba(0, 0, 0, 0.8)
+        );
+    }
+    
 }
 
 @layer utilities {
@@ -86,5 +110,5 @@
 .cdx-settings-button[data-tune='withBorder'],
 .cdx-settings-button[data-tune='withBackground'],
 .cdx-settings-button[data-tune='stretched'] {
-  display: none;
+    display: none;
 }
