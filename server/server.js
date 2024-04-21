@@ -167,12 +167,20 @@ server.post("/signin", (req, res) => {
     })
 })
 
+// Can be changed in the future
 server.get("/latest-novels", (req, res) => {
 
     Novel.find({ draft: false })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
-    .sort({ "updatedAt": -1 }) // -1 is give the lastest updatedAt variable in database
-    .select("novel_id novel_title description categories activity ")
+    .sort({ "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
+    .select("novel_id novel_title novel_banner author artist categories description activity publishedAt updatedAt -_id") // select gives the tag need for frontend
+    .limit(4) // limit the number of novel in one page
+    .then(novels => {
+        return res.status(200).json({ novels })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
 })
 
 server.post('/create-series', verifyJWT, (req, res) => {
