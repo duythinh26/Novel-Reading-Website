@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
-import NovelCard from '../common/NovelCard';
+import NovelBigCard from './NovelBigCard';
 
 const TrendingNovel = () => {
 
@@ -42,10 +42,7 @@ const TrendingNovel = () => {
                                         : 
                                         trendingNovels.map((novel, i) => {
                                             return <div key={i} className="w-items text-base inline-block my-[10px] px-[10px] align-top whitespace-normal box-border mr-1">
-                                                {
-                                                    console.log(novel.novel_title)
-                                                }
-                                                <NovelCard content={novel} publisher={novel.publisher.personal_info}/>
+                                                <NovelBigCard content={novel} publisher={novel.publisher.personal_info}/>
                                             </div>
                                         })
                                     }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const NovelCard = (content, publisher) => {
+const NovelBigCard = (content, publisher) => {
 
     let {novel_id, 
         novel_title, 
@@ -49,4 +49,4 @@ const NovelCard = (content, publisher) => {
     )
 }
 
-export default NovelCard
+export default NovelBigCard
