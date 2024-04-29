@@ -38,7 +38,7 @@ const TrendingNovel = () => {
                             <main className="transform3d top-view duration-300">
                                 <>
                                     {
-                                        trendingNovels == null ? <span></span>
+                                        trendingNovels == null ? <></>
                                         : 
                                         trendingNovels.map((novel, i) => {
                                             return <div key={i} className="w-items text-base inline-block my-[10px] px-[10px] align-top whitespace-normal box-border mr-1">

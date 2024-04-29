@@ -100,12 +100,13 @@ const NovelEditor = () => {
         setNovel({ ...novel, categories: e.map(option => option.label)});
     }
 
-    const handleDescriptionChange = (e) => {
-        setNovel({ ...novel, description: e.replace(/<p>(.*?)<\/p>/g, '$1')})
+    const handleDescriptionChange = (value, editor) => {
+        setNovel({ ...novel, description: editor.getContent({ format: 'text' })})
+        // setNovel({ ...novel, description: e.replace(/<p>(.*?)<\/p>/g, '$1')})
     }
 
-    const handleNoteChange = (e) => {
-        setNovel({ ...novel, note: e.replace(/<p>(.*?)<\/p>/g, '$1')})
+    const handleNoteChange = (value, editor) => {
+        setNovel({ ...novel, note: editor.getContent({ format: 'text' })})
     }
 
     const handleStatusChange = (e) => {
@@ -462,8 +463,15 @@ const NovelEditor = () => {
                                                         { value: 'First.Name', title: 'First Name' },
                                                         { value: 'Email', title: 'Email' },
                                                     ],
-                                                    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                                                    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("")),
                                                     branding: false,
+                                                    selector: "textarea",
+                                                    entity_encoding: "raw",
+                                                    relative_urls : false,
+                                                    convert_urls : false,
+                                                    setup: function (editor) {
+                                                        editor.getContent()
+                                                    }
                                                 }}
                                                 onEditorChange={handleDescriptionChange}
                                             />
@@ -483,8 +491,15 @@ const NovelEditor = () => {
                                                         { value: 'First.Name', title: 'First Name' },
                                                         { value: 'Email', title: 'Email' },
                                                     ],
-                                                    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                                                    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("")),
                                                     branding: false,
+                                                    selector: "textarea",
+                                                    entity_encoding: "raw",
+                                                    relative_urls : false,
+                                                    convert_urls : false,
+                                                    setup: function (editor) {
+                                                        editor.getContent();
+                                                    }
                                                 }}
                                                 onEditorChange={handleNoteChange}
                                             />

@@ -26,7 +26,7 @@ const NovelBigCard = (content, publisher) => {
                 title={content.content.novel_title} 
                 className="inline-block w-full h-banner"
             >
-                <div className="overflow-hidden relative before:content-[''] before:block before:w-full before:pt-[143.3333333333%]">
+                <div className="overflow-hidden relative w-full before:content-[''] before:block before:w-full before:pt-[143.3333333333%]">
                     <div className="absolute inset-0 cover-background" style={{'backgroundImage': `url(${content.content.novel_banner})`}}>
                     </div>
                 </div>
@@ -36,7 +36,7 @@ const NovelBigCard = (content, publisher) => {
                     className="text-xl font-bold h-11 leading-[1.375rem] mb-1 mt-1.5 text-center overflow-hidden"
                     title={content.content.novel_title}
                 >
-                    <a 
+                    <a
                         href={`/novel/${content.content.novel_id}`}
                         title={content.content.novel_title}
                         className="text-xl hover:text-green hover:outline-0 hover:no-underline"

@@ -67,6 +67,10 @@
         background-size: 100% 100%;
     }
 
+    .text-breakword {
+        word-wrap: break-word;
+    }
+
     #root {
         @apply mx-0 p-0 h-auto;
     }
