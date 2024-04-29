@@ -167,12 +167,11 @@ server.post("/signin", (req, res) => {
     })
 })
 
-// Can be changed in the future
-server.get("/latest-novels", (req, res) => {
+server.get("/trending", (req, res) => {
 
     Novel.find({ draft: false })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
-    .sort({ "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
+    .sort({ "activity.total_reads": -1, "activity.total_likes": -1, "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
     .select("novel_id novel_title novel_banner author artist categories description activity publishedAt updatedAt -_id") // select gives the tag need for frontend
     .limit(4) // limit the number of novel in one page
     .then(novels => {
@@ -183,13 +182,45 @@ server.get("/latest-novels", (req, res) => {
     })
 })
 
-server.get("/trending", (req, res) => {
+// Can be changed in the future
+server.get("/latest-original", (req, res) => {
+
+    Novel.find({ draft: false, type_of_novel: "Truyện sáng tác" })
+    .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
+    .sort({ "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
+    .select("novel_id novel_title novel_banner author artist categories description activity publishedAt updatedAt -_id") // select gives the tag need for frontend
+    .limit(5) // limit the number of novel in one page
+    .then(novels => {
+        return res.status(200).json({ novels })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+// Can be changed in the future
+server.get("/latest-chapter", (req, res) => {
 
     Novel.find({ draft: false, type_of_novel: "Truyện dịch" })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
-    .sort({ "activity.total_reads": -1, "activity.total_likes": -1, "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
+    .sort({ "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
     .select("novel_id novel_title novel_banner author artist categories description activity publishedAt updatedAt -_id") // select gives the tag need for frontend
-    .limit(4) // limit the number of novel in one page
+    .limit(11) // limit the number of novel in one page
+    .then(novels => {
+        return res.status(200).json({ novels })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+server.get("/latest-publish", (req, res) => {
+
+    Novel.find({ draft: false })
+    .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
+    .sort({ "publishedAt": -1 }) // -1 gives the lastest updatedAt variable in database
+    .select("novel_id novel_title novel_banner author artist categories description activity publishedAt updatedAt -_id") // select gives the tag need for frontend
+    .limit(6) // limit the number of novel in one page
     .then(novels => {
         return res.status(200).json({ novels })
     })
