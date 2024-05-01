@@ -96,7 +96,7 @@ const Navbar = () => {
                             </li>
                         </ul>
                         <div className="block float-right relative w-64">
-                            <form action="/tim-kiem" method="get">
+                            <form action="/search" method="get">
                                 <input 
                                     className="input input-bordered input-primary border-gainsboro placeholder:text-dark-grey pr-10 pl-5 h-search rounded-full mr-2.5" 
                                     type="text" 

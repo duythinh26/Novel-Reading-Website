@@ -1,13 +1,14 @@
-import React, { createContext, useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
-import './App.css'
-import Navbar from './components/common/Navbar'
-import AuthNavbar from './components/common/AuthNavbar'
-import AuthPage from './components/pages/AuthPage'
-import { lookInSession } from './components/common/Session'
-import Editor from './components/pages/Editor'
-import EditorNavbar from './components/common/EditorNavbar'
-import Homepage from './components/pages/Homepage'
+import React, { createContext, useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import './App.css';
+import Navbar from './components/common/Navbar';
+import AuthNavbar from './components/common/AuthNavbar';
+import AuthPage from './components/pages/AuthPage';
+import { lookInSession } from './components/common/Session';
+import Editor from './components/pages/Editor';
+import EditorNavbar from './components/common/EditorNavbar';
+import Homepage from './components/pages/Homepage';
+import SearchPage from './components/pages/SearchPage';
 
 export const UserContext = createContext({})
 
@@ -37,7 +38,9 @@ const App = () => {
           <Route path='dang-truyen' element={<h1 className="pt-nav">Đăng truyện</h1>}/>
           <Route path='gop-y' element={<h1 className="pt-nav">Góp ý</h1>}/>
           <Route path='ke-sach' element={<h1 className="pt-nav">Kệ sách</h1>}/>
-
+          <Route path='search' element={
+            <SearchPage />
+          }/> 
           <Route index element={<Homepage />}/>
         </Route>
         <Route path='/signin' element={
