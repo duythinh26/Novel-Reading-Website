@@ -229,6 +229,48 @@ server.get("/latest-publish", (req, res) => {
     })
 })
 
+server.post('/search-novels', (req, res) => {
+    
+    let { page, query } = req.body;
+
+    let maxLimit = 18;
+
+    let regexQuery = { draft: false };
+
+    // Search by novel title or other name
+    if (query) {
+        regexQuery.$or = [
+            { novel_title: { $regex: query, $options: 'i' } },
+            { other_name: { $regex: query, $options: 'i' } }
+        ];
+    }
+
+    Novel.find(regexQuery)
+    .populate("publisher", "personal_info.username personal_info.profile_img -_id")
+    .sort({ "publishedAt": -1 })
+    .select("novel_id novel_title novel_banner other_name author artist categories description activity publishedAt updatedAt -_id")
+    .skip((page - 1) * maxLimit)
+    .limit(maxLimit)
+    .then(novels => {
+        return res.status(200).json({ novels })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+server.post('/all-novels', (req, res) => {
+    // countDocuments let we run a count query in order to count the number of documents
+    Novel.countDocuments({ draft: false })
+    .then(count => {
+        return res.status(200).json({ totalDocs: count })
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message })
+    })
+})
+
 server.post('/create-series', verifyJWT, (req, res) => {
 
     let publisherId = req.user;
