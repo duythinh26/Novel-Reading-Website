@@ -25,6 +25,10 @@ const SearchPage = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-novels", { query, page })
         .then( async ({ data }) => {
 
+            if (query.length < 2) {
+                return toast.error("Từ khóa phải có ít nhất 2 ký tự")
+            }
+
             let formatedData = await filterPaginationData({
                 state: novel,
                 data: data.novels,
