@@ -7,6 +7,7 @@ import NoDataMessage from '../common/NoDataMessage';
 import axios from 'axios';
 import { filterPaginationData } from '../common/FilterPaginationData';
 import SearchResultCard from '../common/SearchResultCard';
+import PaginationFooter from '../common/PaginationFooter';
 
 const SearchPage = () => {
 
@@ -15,19 +16,23 @@ const SearchPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const inititalQuery = queryParams.get('keywords') || "";
 
-    const [novel, setNovel ] = useState(null);
-    const [query, setQuery ] = useState(inititalQuery);
+    const [ novel, setNovel ] = useState(null);
+    const [ query, setQuery ] = useState(inititalQuery);
+    const [ currentPage, setCurrentPage ] = useState(1);
 
-    const searchNovels = ( page = 1 ) => {
+    const searchNovels = ({  page = 1, create_new_arr = false }) => {
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-novels", { page})
-        .then( async ({data}) => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-novels", { query, page })
+        .then( async ({ data }) => {
+            console.log(query)
 
             let formatedData = await filterPaginationData({
                 state: novel,
                 data: data.novels,
                 page,
-                countRoute: "/all-novels"
+                countRoute: "/search-novels-count",
+                data_to_send: { query },
+                create_new_arr
             })
 
             setNovel(formatedData)
@@ -46,11 +51,11 @@ const SearchPage = () => {
     }, [location.search]); // Trigger effect when location.search changes
 
     useEffect(() => {
-        searchNovels();
+        searchNovels({ page: 1 });
     }, [])
 
     return (
-        // <div className="pt-nav">Search result: {inititalQuery}</div>
+        // <div className="pt-nav">Search result: {query}</div>
         <main className="min-h-[333px] w-full pt-nav pb-[30px]">
             <header className="mb-[20px]">
                 <div>
@@ -95,20 +100,24 @@ const SearchPage = () => {
                     <main className="p-[10px]">
                         <div className="flex flex-wrap ml-[-15px] mr-[-15px]">
                         {
-                            novel == null ? (<></>)
+                            novel == null ? 
+                                <NoDataMessage message="Không có truyện nào"/>
                             : (
                                 novel.results.length ? 
                                 novel.results.map((novel, i) => {
                                     return <div key={i} className="relative w-full px-[15px] my-[10px] flex-[0_0_33.33333333%] max-w-[33.33333333%] md:flex-[0_0_25%] md:max-w-[25%] lg:flex-[0_0_16.66666667%] lg:max-w-[16.66666667%]">
-                                        
+                                        {
+                                            console.log("Novel:", novel)
+                                        }
                                         <SearchResultCard novel={novel} publisher={novel.publisher}/>
                                     </div>
                                 })
-                                : <NoDataMessage />
+                                : <NoDataMessage  message="Không có truyện nào"/>
                             )
                         }
                         </div>
                     </main>
+                    <PaginationFooter state={novel} fetchDataFunction={searchNovels} />
                 </section>
             </div>
         </main>
