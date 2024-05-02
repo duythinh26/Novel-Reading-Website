@@ -5,7 +5,6 @@ const PaginationFooter = ({ state, fetchDataFunction }) => {
     let maxLimit = 6;
 
     if (state != null && state.totalDocs > state.results.length && state.results.length > 0 ) {
-        console.log(state.page)
         return (
             <div className="bg-white block p-[10px]">
                 <div className="text-right" onClick={() => fetchDataFunction({ page: state.page + 1 })}>

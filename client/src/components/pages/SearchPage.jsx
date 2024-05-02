@@ -24,7 +24,6 @@ const SearchPage = () => {
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-novels", { query, page })
         .then( async ({ data }) => {
-            console.log(query)
 
             let formatedData = await filterPaginationData({
                 state: novel,
@@ -106,9 +105,6 @@ const SearchPage = () => {
                                 novel.results.length ? 
                                 novel.results.map((novel, i) => {
                                     return <div key={i} className="relative w-full px-[15px] my-[10px] flex-[0_0_33.33333333%] max-w-[33.33333333%] md:flex-[0_0_25%] md:max-w-[25%] lg:flex-[0_0_16.66666667%] lg:max-w-[16.66666667%]">
-                                        {
-                                            console.log("Novel:", novel)
-                                        }
                                         <SearchResultCard novel={novel} publisher={novel.publisher}/>
                                     </div>
                                 })
