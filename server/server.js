@@ -231,9 +231,9 @@ server.get("/latest-publish", (req, res) => {
 
 server.post('/search-novels', (req, res) => {
     
-    let { page, query } = req.body;
+    let { query, page } = req.body;
 
-    let maxLimit = 18;
+    let maxLimit = 6;
 
     let regexQuery = { draft: false };
 
@@ -243,7 +243,10 @@ server.post('/search-novels', (req, res) => {
             { novel_title: { $regex: query, $options: 'i' } },
             { other_name: { $regex: query, $options: 'i' } }
         ];
+    } else {
+        return res.status(200).json({ novels: [] })
     }
+    console.log(query)
 
     Novel.find(regexQuery)
     .populate("publisher", "personal_info.username personal_info.profile_img -_id")
@@ -262,6 +265,29 @@ server.post('/search-novels', (req, res) => {
 server.post('/all-novels', (req, res) => {
     // countDocuments let we run a count query in order to count the number of documents
     Novel.countDocuments({ draft: false })
+    .then(count => {
+        return res.status(200).json({ totalDocs: count })
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+server.post('/search-novels-count', (req, res) => {
+    let { query } = req.body;
+
+    let regexQuery = { draft: false };
+
+    // Search by novel title or other name
+    if (query) {
+        regexQuery.$or = [
+            { novel_title: { $regex: query, $options: 'i' } },
+            { other_name: { $regex: query, $options: 'i' } }
+        ];
+    }
+
+    Novel.countDocuments(query)
     .then(count => {
         return res.status(200).json({ totalDocs: count })
     })
