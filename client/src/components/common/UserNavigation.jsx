@@ -9,7 +9,7 @@ const UserNavigation = () => {
     const { userAuth: { username }, setUserAuth } = useContext(UserContext)
 
     const signOutUser = () => {
-        removeFormSession("user")
+        removeFormSession("user");
 
         // Reset the web auth state
         setUserAuth({ access_token: null })

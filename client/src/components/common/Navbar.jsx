@@ -47,36 +47,36 @@ const Navbar = () => {
                     </div>
     
                     {/* Navbar main block */}
-                    <div className="flex w-3/4 h-nav">
+                    <div className="flex xl:w-3/4 lg:w-[90%] h-nav">
                         <ul className="menu menu-horizontal flex-auto float-left m-0 p-0">
                             <li className="float-left h-nav">
-                                <Link to="/sang-tac" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <Link to="/sang-tac" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-3 xl:py-2 lg:px-2 lg:py-0">
                                     <span>Sáng tác</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/convert" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0"> 
+                                <Link to="/convert" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-3 xl:py-2 lg:px-2 lg:py-0"> 
                                     <span>Dịch máy</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/danh-sach" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <Link to="/danh-sach" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-3 xl:py-2 lg:px-2 lg:py-0">
                                     <span>Danh sách</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/dashboard" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <Link to="/dashboard" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-3 xl:py-2 lg:px-2 lg:py-0">
                                     <span>Dashboard</span>
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/thao-luan" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                <Link to="/thao-luan" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-3 xl:py-2 lg:px-2 lg:py-0">
                                     <span>Thảo luận</span>
                                 </Link>
                             </li>
                             <li className="h-nav">
                                 <details className="dropdown">
-                                    <summary className="h-nav content-center font-bold xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                    <summary className="h-nav content-center font-bold xl:px-3 xl:py-2 lg:px-2 lg:py-0">
                                         Hướng dẫn
                                     </summary>
                                     {/* Use ! before the classname to set important for that classname */}
@@ -113,20 +113,20 @@ const Navbar = () => {
                                 <div className="float-right h-nav w-user">
                                     <div className="h-nav cursor-pointer float-left">
                                         <Link to="/ke-sach">
-                                            <button className="btn btn-circle btn-sm w-icon h-icon m-2 border-0">
+                                            <button className="btn btn-circle btn-sm w-icon h-icon xl:m-2 lg:m-1 border-0">
                                                 <FontAwesomeIcon icon={faHeart} />
                                             </button>
                                         </Link>
                                     </div>
                                     <div className="h-nav cursor-pointer float-left">
                                         <Link to="">
-                                            <button className="btn btn-circle btn-sm w-icon h-icon m-2">
+                                            <button className="btn btn-circle btn-sm w-icon h-icon xl:m-2 lg:m-1">
                                                 <FontAwesomeIcon icon={faBell} />
                                             </button>
                                         </Link>
                                     </div>
                                     <div className="avatar h-nav" onClick={handleUserNavPanel} onBlur={handleBlur}>
-                                        <button className="btn btn-circle btn-sm border-4 m-2 overflow-hidden w-icon h-icon" >
+                                        <button className="btn btn-circle btn-sm border-4 xl:m-2 lg:m-1 overflow-hidden w-icon h-icon">
                                             <img src={profile_img} alt="Ảnh đại diện" className="w-full h-full object-cover rounded-full" />
                                         </button>
                                         {

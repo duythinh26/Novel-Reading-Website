@@ -28,8 +28,9 @@ export default {
             'metallic': "#204d74",
             'green': "#10b18e",
             'boldblack': "rgba(26, 26, 26, .8)",
-            'lightblack': "rgba(0,0,0,.4)",
+            'lightblack': "rgba(0, 0, 0, .4)",
             'lightgrey': "rgba(227,229,232,0.5)",
+            'profile': "hsla(0, 0%, 100%, .9)",
         },
 
         fontSize: {

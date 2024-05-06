@@ -9,6 +9,8 @@ import Editor from './components/pages/Editor';
 import EditorNavbar from './components/common/EditorNavbar';
 import Homepage from './components/pages/Homepage';
 import SearchPage from './components/pages/SearchPage';
+import ProfilePage from './components/pages/ProfilePage';
+import PageNotFound from './components/pages/PageNotFound';
 
 export const UserContext = createContext({})
 
@@ -38,10 +40,9 @@ const App = () => {
           <Route path='dang-truyen' element={<h1 className="pt-nav">Đăng truyện</h1>}/>
           <Route path='gop-y' element={<h1 className="pt-nav">Góp ý</h1>}/>
           <Route path='ke-sach' element={<h1 className="pt-nav">Kệ sách</h1>}/>
-          <Route path='search' element={
-            <SearchPage />
-          }/> 
-          <Route index element={<Homepage />}/>
+          <Route path='search' element={ <SearchPage /> } /> 
+          <Route path='user/:id' element={ <ProfilePage /> } />
+          <Route index element={ <Homepage /> } />
         </Route>
         <Route path='/signin' element={
           // Using fragment (<></>) to render multiple component in one Route
@@ -62,6 +63,8 @@ const App = () => {
             <Editor />
           </>
         }/>
+        {/* leave this tag at the end of the route / since the path of this route is all path */}
+        <Route path='*' element={ <PageNotFound />}/>
       </Routes>
     </UserContext.Provider>
   )
