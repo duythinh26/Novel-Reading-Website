@@ -69,6 +69,10 @@ const userSchema = mongoose.Schema({
         total_followings: {
             type: Number, 
             default: 0
+        },
+        total_comments: {
+            type: Number,
+            default: 0
         }
     },
     google_auth: {

@@ -231,7 +231,7 @@ server.get("/latest-publish", (req, res) => {
 
 server.post('/search-novels', (req, res) => {
     
-    let { query, page } = req.body;
+    let { query, page, publisher } = req.body;
 
     let maxLimit = 6;
 
@@ -243,15 +243,16 @@ server.post('/search-novels', (req, res) => {
             { novel_title: { $regex: query, $options: 'i' } },
             { other_name: { $regex: query, $options: 'i' } }
         ];
+    } else if(publisher) {
+        regexQuery = { publisher, draft: false }
     } else {
         return res.status(200).json({ novels: [] })
     }
-    console.log(query)
 
     Novel.find(regexQuery)
     .populate("publisher", "personal_info.username personal_info.profile_img -_id")
     .sort({ "publishedAt": -1 })
-    .select("novel_id novel_title novel_banner other_name author artist categories description activity publishedAt updatedAt -_id")
+    .select("novel_id novel_title novel_banner other_name author artist type_of_novel categories description activity status publishedAt updatedAt -_id")
     .skip((page - 1) * maxLimit)
     .limit(maxLimit)
     .then(novels => {
@@ -275,7 +276,7 @@ server.post('/all-novels', (req, res) => {
 })
 
 server.post('/search-novels-count', (req, res) => {
-    let { query } = req.body;
+    let { query, publisher } = req.body;
 
     let regexQuery = { draft: false };
 
@@ -285,6 +286,8 @@ server.post('/search-novels-count', (req, res) => {
             { novel_title: { $regex: query, $options: 'i' } },
             { other_name: { $regex: query, $options: 'i' } }
         ];
+    } else if(publisher) {
+        regexQuery = { publisher, draft: false }
     }
 
     Novel.countDocuments(query)
@@ -368,6 +371,21 @@ server.post('/create-series', verifyJWT, (req, res) => {
     })
     .catch(err => {
         return res.status(500).json({ error: err.message });
+    })
+})
+
+server.post('/users', (req, res) => {
+
+    let { username } = req.body;
+
+    User.findOne({ "personal_info.username": username })
+    .select("-google_auth -personal_info.password -updatedAt -novels")
+    .then(user => {
+        return res.status(200).json({ user })
+    })
+    .catch(err => {
+        console.log(err.message)
+        return res.status(500).json({ error: err.message })
     })
 })
 
