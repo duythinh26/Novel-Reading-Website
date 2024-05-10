@@ -20,10 +20,10 @@ const NovelInProfile = (novel) => {
                             novel.novel.type_of_novel === "Truyện convert" ? "bg-[#dc8118]" : ""
                             }`}>{novel.novel.type_of_novel}</small>
                         </div>
-                        <h5 className="max-h-[4.8rem] overflow-hidden font-bold text-2xl leading-[1.5rem]">
+                        <h5 className="max-h-[4.8rem] overflow-hidden font-bold leading-[1.5rem]">
                             <a 
                                 href={`/novel/${novel.novel.novel_id}`}
-                                className="hover:text-green hover:outline-0 hover:no-underline"
+                                className="text-[16px] hover:text-green hover:outline-0 hover:no-underline"
                             >
                                 {novel.novel.novel_title}
                             </a>
@@ -37,7 +37,7 @@ const NovelInProfile = (novel) => {
                         <div>
                             <span className="font-bold mr-[4px] text-[12px]">Lần cuối: </span>
                             <span>
-                                <TimeDifference title={novel.novel.publisher} valueDateTime={novel.novel.publishedAt}/>
+                                <TimeDifference valueDateTime={novel.novel.publishedAt} className="text-[12px]"/>
                             </span>
                         </div>
                     </div>

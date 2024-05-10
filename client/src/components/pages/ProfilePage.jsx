@@ -129,7 +129,7 @@ const ProfilePage = () => {
                                         </li>
                                         <li className="relative w-full px-[15px] flex-[0_0_50%] max-w-[50%]">
                                             <div className="font-bold text-center text-[22px] leading-[30px]">{userProfile.user.account_info.total_reads.toLocaleString()}</div>
-                                            <div className="text-lightblack text-center">Truyện đã xem</div>
+                                            <div className="text-lightblack text-center">Lượt xem</div>
                                         </li>
                                         <li className="relative w-full px-[15px] flex-[0_0_50%] max-w-[50%]">
                                             <div className="font-bold text-center text-[22px] leading-[30px]">{userProfile.user.account_info.total_comments.toLocaleString()}</div>

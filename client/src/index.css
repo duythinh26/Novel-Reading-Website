@@ -61,6 +61,10 @@
         @apply content-[""] clear-both table;
     }
 
+    .clearfix:after {
+        @apply content-[""] clear-both block;
+    }
+
     .cover-background {
         background-position: 50%;
         background-repeat: no-repeat;
@@ -127,7 +131,7 @@
         @apply bg-[#36a189] text-white cursor-pointer float-left font-bold h-[40px] px-[20px] py-[5px] border-0;
     }
     
-    .basic-section {
+    .basic-section, .page-breadcrumb, .feature-section, .series-users {
         background-color: hsla(0, 0%, 100%, .9);
         border-color: #e4e5e7 #dadbdd hsla(214, 4%, 80%, .8);
         border-radius: 4px;
@@ -201,6 +205,57 @@
         border-style: solid;
         border-width: 1px;
         overflow: hidden;
+    }
+
+    .series-type {
+        border-radius: 4px;
+        color: #fff;
+        display: inline-block;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding: 6px 10px;
+        position: relative;
+        text-align: center;
+        width: 100%;
+    }
+
+    .series-type:before {
+        border: 10px solid transparent;
+        bottom: -19px;
+        content: "";
+        height: 0;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        right: 0;
+        width: 0;
+    }
+
+    .more-detail {
+        background: linear-gradient(180deg, hsla(0, 0%, 100%, 0) 0, #fff 75%, #fff);
+        bottom: 0;
+        cursor: pointer;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00ffffff",endColorstr="#ffffff",GradientType=0);
+        height: 100px;
+        position: absolute;
+        width: 100%;
+    }
+    
+    .side-feature-button {
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        padding: 4px 10px;
+        text-align: center;
+        transition: .25s;
+        -webkit-transition: .25s;
+        -moz-transition: .25s;
+        -o-transition: .25s;
+    }
+
+    .side-feature-button:hover {
+        color: inherit;
+        opacity: .5;
     }
 }
 

@@ -11,6 +11,7 @@ import Homepage from './components/pages/Homepage';
 import SearchPage from './components/pages/SearchPage';
 import ProfilePage from './components/pages/ProfilePage';
 import PageNotFound from './components/pages/PageNotFound';
+import NovelPage from './components/pages/NovelPage';
 
 export const UserContext = createContext({})
 
@@ -42,6 +43,7 @@ const App = () => {
           <Route path='ke-sach' element={<h1 className="pt-nav">Kệ sách</h1>}/>
           <Route path='search' element={ <SearchPage /> } /> 
           <Route path='user/:id' element={ <ProfilePage /> } />
+          <Route path='novel/:novel_id' element={ <NovelPage /> } />
           <Route index element={ <Homepage /> } />
         </Route>
         <Route path='/signin' element={

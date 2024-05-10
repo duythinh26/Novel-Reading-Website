@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const TimeDifference = ({ valueDateTime }) => {
+const TimeDifference = ({ valueDateTime, className }) => {
 
     const [timeDifference, setTimeDifference] = useState('');
 
@@ -37,7 +37,7 @@ const TimeDifference = ({ valueDateTime }) => {
     return (
         <time 
             dateTime={valueDateTime} 
-            className="text-[12px]"
+            className={className}
         >
             {timeDifference}
         </time>
