@@ -389,6 +389,34 @@ server.post('/users', (req, res) => {
     })
 })
 
+server.post('/get-novels', (req, res) => {
+
+    // Retrieve id from req
+    let { novel_id } = req.body;
+
+    let incrementVal = 1;
+
+    // Increase novel total reads by 1
+    Novel.findOneAndUpdate({ novel_id }, { $inc: { "activity.total_reads": incrementVal }})
+    .populate("publisher", "personal_info.username personal_info.profile_img")
+    .select("-draft -_id -novel_id")
+    .then(novel => {
+        // Increase user total reads by increase by 1
+        User.findOneAndUpdate({ "personal_info.username": novel.publisher.personal_info.username }, 
+        {
+            $inc: { "account_info.total_reads": incrementVal }
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message })
+        })
+
+        return res.status(200).json({ novel });
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
