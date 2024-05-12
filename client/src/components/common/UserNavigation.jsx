@@ -6,7 +6,7 @@ import { UserContext } from "../../App";
 import { removeFormSession } from "./Session";
 
 const UserNavigation = () => {
-    const { userAuth: { username }, setUserAuth } = useContext(UserContext)
+    const { userAuth: { username }, userAuth, setUserAuth } = useContext(UserContext)
 
     const signOutUser = () => {
         removeFormSession("user");

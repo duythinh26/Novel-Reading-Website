@@ -257,6 +257,17 @@
         color: inherit;
         opacity: .5;
     }
+
+    .section-title {
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        font-weight: 700;
+        margin-right: 10px;
+        transition: .25s;
+        -webkit-transition: .25s;
+        -moz-transition: .25s;
+        -o-transition: .25s;
+    }
 }
 
 @layer utilities {

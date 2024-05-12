@@ -7,6 +7,7 @@ import TimeDifference from '../common/TimeDifference';
 import { novelStructure } from '../common/novelStructure';
 import NovelInteraction from '../common/NovelInteraction';
 import { UserContext } from '../../App';
+import CommentsContainer from '../common/CommentsContainer';
 
 export const NovelContext = createContext({ });
 
@@ -16,7 +17,10 @@ const NovelPage = () => {
 
     const [ novel, setNovel ] = useState(novelStructure);
     const [ moreDetail, setMoreDetail ] = useState(false);
-
+    const [ isLikedByUser, setLikedByUSer ] = useState(false);
+    const [ commentsWrapper, setCommentsWrapper ] = useState(true);
+    const [ totalParentCommentsLoaded, setTotalParentCommentsLoaded ] = useState(0)
+ 
     let { userAuth: { username } } = useContext(UserContext);
 
     // Destructure data to avoid using novel.novel for all attributes
@@ -59,15 +63,24 @@ const NovelPage = () => {
     }
     
     useEffect(() => {
+        resetStates();
+
         fetchNovel();
-    }, [])
+    }, [novel_id])
+
+    const resetStates = () => {
+        setNovel(novelStructure);
+        setLikedByUSer(false);
+        setCommentsWrapper(false);
+        setTotalParentCommentsLoaded(0);
+    }
 
     const handleMoreDetail = () => {
-        setMoreDetail(!moreDetail)
+        setMoreDetail(!moreDetail);
     }
 
     return (
-        <NovelContext.Provider value={{ novel, setNovel }}>
+        <NovelContext.Provider value={{ novel, setNovel, isLikedByUser, setLikedByUSer, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded }}>
             <main className="min-h-80 pt-20 pb-[30px] w-full">
                 <div className="container mx-auto px-[15px]">
                     <div className="flex flex-wrap ml-[-15px] mr-[-15px]">
@@ -287,6 +300,9 @@ const NovelPage = () => {
                                     </div>
                                 </main>
                             </section>
+                        </div>
+                        <div className="!float-left relative w-full px-[15px] flex-[0_0_100%] max-w-full lg:flex-[0_0_75%] lg:max-w-[75%]">
+                            <CommentsContainer />
                         </div>
                     </div>
                 </div>
