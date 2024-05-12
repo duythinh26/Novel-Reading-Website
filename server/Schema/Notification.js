@@ -6,10 +6,10 @@ const notificationSchema = mongoose.Schema({
         enum: ["like", "comment", "reply"],
         required: true
     },
-    blog: {
+    novel: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'blogs'
+        ref: 'novels'
     },
     notification_for: {
         type: Schema.Types.ObjectId,

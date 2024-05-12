@@ -9,6 +9,7 @@ import aws from "aws-sdk";
 
 import User from "./Schema/User.js";
 import Novel from "./Schema/Novel.js";
+import Notification from "./Schema/Notification.js"
 
 const server = express();
 let PORT = 3000;
@@ -399,7 +400,7 @@ server.post('/get-novels', (req, res) => {
     // Increase novel total reads by 1
     Novel.findOneAndUpdate({ novel_id }, { $inc: { "activity.total_reads": incrementVal }})
     .populate("publisher", "personal_info.username personal_info.profile_img")
-    .select("-draft -_id -novel_id")
+    .select("-draft")
     .then(novel => {
         // Increase user total reads by increase by 1
         User.findOneAndUpdate({ "personal_info.username": novel.publisher.personal_info.username }, 
@@ -411,6 +412,53 @@ server.post('/get-novels', (req, res) => {
         })
 
         return res.status(200).json({ novel });
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+server.post('/like-novel', verifyJWT, (req, res) => {
+
+    let user_id = req.user;
+
+    let { _id, isLikedByUser } = req.body;
+
+    let incrementVal = !isLikedByUser ? 1 : -1;
+
+    Novel.findOneAndUpdate({ _id }, { $inc: { "activity.total_likes": incrementVal }})
+    .then(novel => {
+        if (!isLikedByUser){
+            let like = new Notification({
+                type: "like",
+                novel: _id,
+                notification_for: novel.publisher,
+                user: user_id
+            })
+
+            like.save().then(notification => {
+                return res.status(200).json({ liked_by_user: true })
+            })
+        } else { // If user dislike novel
+            Notification.findOneAndDelete({ user: user_id, novel: _id, type: "like" })
+            .then(data => {
+                return res.status(200).json({ liked_by_user: false })
+            })
+        }
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+server.post('/isliked-by-user', verifyJWT, (req, res) => {
+    let user_id = req.user;
+
+    let { _id } = req.body;
+
+    Notification.exists({ user: user_id, type: "like", novel: _id })
+    .then(result => {
+        return res.status(200).json({ result })
     })
     .catch(err => {
         return res.status(500).json({ error: err.message })
