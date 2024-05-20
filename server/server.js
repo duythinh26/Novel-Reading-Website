@@ -10,6 +10,7 @@ import aws from "aws-sdk";
 import User from "./Schema/User.js";
 import Novel from "./Schema/Novel.js";
 import Notification from "./Schema/Notification.js"
+import Comment from "./Schema/Comment.js";
 
 const server = express();
 let PORT = 3000;
@@ -463,6 +464,119 @@ server.post('/isliked-by-user', verifyJWT, (req, res) => {
     .catch(err => {
         return res.status(500).json({ error: err.message })
     })
+})
+
+server.post("/add-comment", verifyJWT, (req, res) => {
+    let user_id = req.user;
+
+    let { _id, comment, novel_publisher, replying_to } = req.body;
+
+    if (!comment.length) {
+        return res.status(403).json({ err: "Bạn chưa viết gì để bình luận"})
+    }
+
+    // Create a comment docs
+    let commentObject = {
+        novel_id: _id,
+        novel_publisher,
+        comment,
+        commented_by: user_id,
+    }
+
+    if (replying_to) {
+        commentObject.parent = replying_to;
+        comment.isReply = true;
+    }
+
+    new Comment(commentObject).save().then(async commentFile => {
+        // Update novel total comments
+        let { comment, commentedAt, children } = commentFile;
+
+        Novel.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parent_comments": replying_to ? 0 : 1 } })
+        .then(novel => {
+            User.findOneAndUpdate({ user_id }, { $inc: {"account_info.total_comments": 1 }})
+            console.log("New comment created");
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message })
+        })
+
+        let notificationObject = {
+            type: replying_to ? "reply" :"comment",
+            novel: _id,
+            notification_for: novel_publisher,
+            user: user_id,
+            comment: commentFile._id
+        }
+
+        if (replying_to) {
+            notificationObject.replied_on_comment = replying_to;
+
+            await Comment.findOneAndUpdate({ _id: replying_to }, { $push: { children: commentFile._id }})
+            .then(replyToDoc => {
+                notificationObject.notification_for = replyToDoc.commented_by
+            })
+        }
+        
+        new Notification(notificationObject).save().then(notification => {
+            console.log("New notification created");
+        })
+
+        return res.status(200).json({
+            comment, commentedAt, _id: commentFile._id, user_id, children
+        })
+    })
+})
+
+server.post("/get-novel-comments", (req, res) => {
+    let { novel_id, skip } = req.body;
+
+    let maxLimit = 5;
+
+    Comment.find({ novel_id, isReply: false })
+    .populate("commented_by", "personal_info.username personal_info.profile_img")
+    .skip(skip)
+    .limit(maxLimit)
+    .sort({
+        'commentedAt': -1
+    })
+    .then(comment => {
+        return res.status(200).json(comment)
+    })
+    .catch((err) => {
+        console.log(err.message)
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+server.post("/get-replies", (req, res) => {
+
+    let { _id, skip } = req.body;
+
+    let maxLimit = 5;
+
+    Comment.findOne({ _id, })
+    .populate({
+        path: "children", // path is the key want to populate
+        option: {
+            limit: maxLimit,
+            skip: skip,
+            sort: { 'commentedAt': -1 }
+        }, // option is what we want to do
+        populate: {
+            path: 'commented_by',
+            select: "personal_info.profile_img personal_info.username"
+        },
+        select: "-novel_id -updatedAt"
+    })
+    .select("children")
+    .then(doc => {
+        return res.status(200).json({ replies: doc.children })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+
 })
 
 server.listen(PORT, () => {

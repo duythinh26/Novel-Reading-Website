@@ -7,12 +7,7 @@ const commentSchema = mongoose.Schema({
         required: true,
         ref: 'novels'
     },
-    chapter_id: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'chapters'
-    },
-    novel_poster: {
+    novel_publisher: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'novels',
@@ -32,6 +27,7 @@ const commentSchema = mongoose.Schema({
     },
     isReply: {
         type: Boolean,
+        default: false,
     },
     parent: {
         type: Schema.Types.ObjectId,
@@ -44,4 +40,4 @@ const commentSchema = mongoose.Schema({
     }
 })
 
-export default mongoose.model("comments", commentSchema)
+ export default mongoose.model("comments", commentSchema)
