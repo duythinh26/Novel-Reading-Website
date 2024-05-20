@@ -31,6 +31,8 @@ export default {
             'lightblack': "rgba(0, 0, 0, .4)",
             'lightgrey': "rgba(227,229,232,0.5)",
             'profile': "hsla(0, 0%, 100%, .9)",
+            'zinc': "rgb(39, 39, 42)",
+            'slate-500': "rgb(100, 116, 139)",
         },
 
         fontSize: {

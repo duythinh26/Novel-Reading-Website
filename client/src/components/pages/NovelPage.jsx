@@ -7,7 +7,7 @@ import TimeDifference from '../common/TimeDifference';
 import { novelStructure } from '../common/novelStructure';
 import NovelInteraction from '../common/NovelInteraction';
 import { UserContext } from '../../App';
-import CommentsContainer from '../common/CommentsContainer';
+import CommentsContainer, { fetchComments } from '../common/CommentsContainer';
 
 export const NovelContext = createContext({ });
 
@@ -18,8 +18,7 @@ const NovelPage = () => {
     const [ novel, setNovel ] = useState(novelStructure);
     const [ moreDetail, setMoreDetail ] = useState(false);
     const [ isLikedByUser, setLikedByUSer ] = useState(false);
-    const [ commentsWrapper, setCommentsWrapper ] = useState(true);
-    const [ totalParentCommentsLoaded, setTotalParentCommentsLoaded ] = useState(0)
+    const [ totalParentCommentsLoaded, setTotalParentCommentsLoaded ] = useState(0);
  
     let { userAuth: { username } } = useContext(UserContext);
 
@@ -54,8 +53,11 @@ const NovelPage = () => {
 
     const fetchNovel = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-novels", { novel_id })
-        .then(({ data }) => {
-            setNovel(data.novel);
+        .then( async ({ data: { novel } }) => {
+
+            novel.comments = await fetchComments({ novel_id: novel._id, setParentCommentCountFun: setTotalParentCommentsLoaded })
+            
+            setNovel(novel);
         })
         .catch(err => {
             console.log(err);
@@ -71,7 +73,6 @@ const NovelPage = () => {
     const resetStates = () => {
         setNovel(novelStructure);
         setLikedByUSer(false);
-        setCommentsWrapper(false);
         setTotalParentCommentsLoaded(0);
     }
 
@@ -80,7 +81,7 @@ const NovelPage = () => {
     }
 
     return (
-        <NovelContext.Provider value={{ novel, setNovel, isLikedByUser, setLikedByUSer, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded }}>
+        <NovelContext.Provider value={{ novel, setNovel, isLikedByUser, setLikedByUSer, totalParentCommentsLoaded, setTotalParentCommentsLoaded }}>
             <main className="min-h-80 pt-20 pb-[30px] w-full">
                 <div className="container mx-auto px-[15px]">
                     <div className="flex flex-wrap ml-[-15px] mr-[-15px]">
@@ -223,12 +224,6 @@ const NovelPage = () => {
                                             <div className="relative w-full px-[15px] flex-[0_0_100%] max-w-full mt-[10px] pt-[10px] border-t-[#d4dae2] border-t border-solid">
                                                 <div className="mb-[20px]">
                                                     <h4 className="font-bold">Tóm tắt</h4>
-                                                    {/* <div className="max-h-[100px] overflow-hidden relative mb-0">
-                                                        <p className="leading-6">{description}</p>
-                                                    </div>
-                                                    <div className="more-detail hover:text-green">
-                                                        <div className="cursor-pointer font-bold absolute pl-0 pr-[10px] py-[10px] bottom-0 inset-x-0 " onClick={handleMoreDetail}>{moreDetail}</div>
-                                                    </div> */}
                                                     {
                                                         moreDetail === false ?
                                                         <>
