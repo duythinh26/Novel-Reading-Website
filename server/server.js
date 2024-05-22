@@ -76,6 +76,49 @@ const verifyJWT = (req, res, next) => {
     });
 }
 
+const deleteComments = (_id) => {
+    Comment.findOne({ _id })
+    .then(comment => {
+        if (comment.parent) { // Checking parent key of the comment
+            Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id }})
+            .then(data => {
+                console.log("Comment delete from parent")
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+
+        Notification.findOneAndDelete({ comment: _id })
+        .then(notification => {
+            console.log("Notification deleted")
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+        Notification.findOneAndDelete({ reply: _id })
+        .then(notification => {
+            console.log("Reply deleted")
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+        Novel.findOneAndUpdate({ _id: comment.novel_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1, "activity.total_parent_comments": comment.parent ? 0 : -1 } })
+        .then(novel => {
+            if (comment.children.length) {
+                comment.children.map(replies => {
+                    deleteComments(replies);
+                })
+            }
+        })
+    })
+    .catch(err => {
+        console.log(err.message)
+    })
+}
+
 // Upload images url route
 server.get("/get-upload-url", (req, res) => {
     generateUploadURL().then(url => res.status(200).json({ uploadURL: url }))
@@ -170,7 +213,6 @@ server.post("/signin", (req, res) => {
 })
 
 server.get("/trending", (req, res) => {
-
     Novel.find({ draft: false })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
     .sort({ "activity.total_reads": -1, "activity.total_likes": -1, "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
@@ -186,7 +228,6 @@ server.get("/trending", (req, res) => {
 
 // Can be changed in the future
 server.get("/latest-original", (req, res) => {
-
     Novel.find({ draft: false, type_of_novel: "Truyện sáng tác" })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
     .sort({ "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
@@ -202,7 +243,6 @@ server.get("/latest-original", (req, res) => {
 
 // Can be changed in the future
 server.get("/latest-chapter", (req, res) => {
-
     Novel.find({ draft: false, type_of_novel: "Truyện dịch" })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
     .sort({ "updatedAt": -1 }) // -1 gives the lastest updatedAt variable in database
@@ -217,7 +257,6 @@ server.get("/latest-chapter", (req, res) => {
 })
 
 server.get("/latest-publish", (req, res) => {
-
     Novel.find({ draft: false })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
     .sort({ "publishedAt": -1 }) // -1 gives the lastest updatedAt variable in database
@@ -232,7 +271,6 @@ server.get("/latest-publish", (req, res) => {
 })
 
 server.post('/search-novels', (req, res) => {
-    
     let { query, page, publisher } = req.body;
 
     let maxLimit = 6;
@@ -303,7 +341,6 @@ server.post('/search-novels-count', (req, res) => {
 })
 
 server.post('/create-series', verifyJWT, (req, res) => {
-
     let publisherId = req.user;
 
     let {
@@ -377,7 +414,6 @@ server.post('/create-series', verifyJWT, (req, res) => {
 })
 
 server.post('/users', (req, res) => {
-
     let { username } = req.body;
 
     User.findOne({ "personal_info.username": username })
@@ -392,7 +428,6 @@ server.post('/users', (req, res) => {
 })
 
 server.post('/get-novels', (req, res) => {
-
     // Retrieve id from req
     let { novel_id } = req.body;
 
@@ -420,7 +455,6 @@ server.post('/get-novels', (req, res) => {
 })
 
 server.post('/like-novel', verifyJWT, (req, res) => {
-
     let user_id = req.user;
 
     let { _id, isLikedByUser } = req.body;
@@ -550,7 +584,6 @@ server.post("/get-novel-comments", (req, res) => {
 })
 
 server.post("/get-replies", (req, res) => {
-
     let { _id, skip } = req.body;
 
     let maxLimit = 5;
@@ -558,11 +591,11 @@ server.post("/get-replies", (req, res) => {
     Comment.findOne({ _id, })
     .populate({
         path: "children", // path is the key want to populate
-        option: {
+        options: {
             limit: maxLimit,
             skip: skip,
             sort: { 'commentedAt': -1 }
-        }, // option is what we want to do
+        }, // options is what we want to do
         populate: {
             path: 'commented_by',
             select: "personal_info.profile_img personal_info.username"
@@ -577,6 +610,23 @@ server.post("/get-replies", (req, res) => {
         return res.status(500).json({ error: err.message })
     })
 
+})
+
+server.post("/delete-comment", verifyJWT, (req, res) => {
+    let user_id = req.user;
+
+    let { _id } = req.body;
+
+    Comment.findOne({ _id })
+    .then(comment => {
+        if (user_id == comment.commented_by || user_id == comment.novel_publisher) {
+            deleteComments(_id)
+
+            return res.status(200).json({ status: "Done" });
+        } else {
+            return res.status(403).json({ error: "You cannot delete this comment" });
+        }
+    })
 })
 
 server.listen(PORT, () => {
