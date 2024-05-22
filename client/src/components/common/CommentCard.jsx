@@ -13,7 +13,7 @@ const CommentCard = ({ index, leftValue, commentData }) => {
         commented_by: {
             personal_info: {
                 profile_img,
-                username
+                username: commented_by_username
             }
         },
         children,
@@ -21,13 +21,28 @@ const CommentCard = ({ index, leftValue, commentData }) => {
         commentedAt
     } = commentData;
 
-    let { novel, novel: { comments, comments : { results: commentsArr }}, setNovel } = useContext(NovelContext)
+    let { novel, novel: { comments, activity, activity: { total_parent_comments }, comments : { results: commentsArr }, publisher: { personal_info: { username: publisher }}}, setNovel, setTotalParentCommentsLoaded } = useContext(NovelContext)
     
-    let { userAuth: { access_token }, setUserAuth } = useContext(UserContext);
+    let { userAuth: { access_token, username }, setUserAuth } = useContext(UserContext);
     
     const [ isReply, setReply ] = useState(false);
+    const [ isDisabled, setDisabled ] = useState(false);
 
-    const removeCommentsCards = (startingPoint) => {
+    const getParentIndex = () => {
+        let startingPoint = index - 1;
+
+        try {
+            while (commentsArr[startingPoint].childrenLevel >= commentData.childrenLevel) {
+                startingPoint--
+            }
+        } catch {
+            startingPoint = undefined;
+        }
+
+        return startingPoint;
+    }
+
+    const removeCommentsCards = (startingPoint, isDelete = false) => {
         if (commentsArr[startingPoint]) {
             while(commentsArr[startingPoint].childrenLevel > commentData.childrenLevel) {
                 commentsArr.splice(startingPoint, 1)
@@ -38,7 +53,27 @@ const CommentCard = ({ index, leftValue, commentData }) => {
             }
         }
 
-        setNovel({ ...novel, comments: { results: commentsArr } })
+        if (isDelete) {
+            let parentIndex = getParentIndex();
+
+            if (parentIndex != undefined) {
+                commentsArr[parentIndex].children = commentsArr[parentIndex].children.filter(child => {
+                    child != _id
+                })
+
+                if (commentsArr[parentIndex].children.length) {
+                    commentsArr[parentIndex].isReplyLoaded = false;
+                }
+            }
+
+            commentsArr.splice(index, 1)
+        }
+
+        if (commentData.childrenLevel == 0 && isDelete) {
+            setTotalParentCommentsLoaded(preVal => preVal - 1)
+        }
+
+        setNovel({ ...novel, comments: { results: commentsArr }, activity: { ...activity, total_parent_comments: total_parent_comments - (commentData.childrenLevel == 0 && isDelete ? 1 : 0 )} })
     }
 
     const handleReplyText = () => {
@@ -73,6 +108,24 @@ const CommentCard = ({ index, leftValue, commentData }) => {
         }
     }
 
+    const deleteComment = (e) => {
+        setDisabled(true);
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/delete-comment", { _id }, {
+            headers: { // Send the headers when we have to verify user using verifyJWT in serverm n        
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(() => {
+            setDisabled(false);
+
+            removeCommentsCards(index + 1, true)
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
     return (
         <div className="relative !mt-[12px] clear" style={{ marginLeft: `${leftValue}px`}}>
             <div className="flex gap-1 max-w-full">
@@ -87,10 +140,10 @@ const CommentCard = ({ index, leftValue, commentData }) => {
                             <div className="flex flex-wrap gap-x-2 gap-y-1 align-middle pt-[4px]">
                                 <div className="self-center h-8">
                                     <a 
-                                        href={`/user/${username}`}
+                                        href={`/user/${commented_by_username}`}
                                         className="md:leading-7 leading-6 font-bold hover:text-green hover:outline-0 hover:no-underline"
                                     >
-                                        {username}
+                                        {commented_by_username}
                                     </a>
                                 </div>
                             </div>
@@ -125,6 +178,17 @@ const CommentCard = ({ index, leftValue, commentData }) => {
                                 >
                                     <span className="font-semibold text-[13px]">{children.length} bình luận</span>
                                 </a>
+                            }
+                            {
+                                username == commented_by_username || username == publisher ? 
+                                <button 
+                                    className="self-center cursor-pointer inline-block leading-[15px] opacity-100 mr-[10px] border-b-0 border-b-[#111] border-solid hover:text-inherit hover:border-b ml-auto"
+                                    onClick={deleteComment}
+                                    disabled={isDisabled}
+                                >
+                                    <span className="font-semibold text-[13px]">Xóa bình luận</span>
+                                </button>
+                                : ""
                             }
                         </div>
                     </div>
