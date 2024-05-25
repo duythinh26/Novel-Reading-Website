@@ -212,6 +212,53 @@ server.post("/signin", (req, res) => {
     })
 })
 
+server.post("/change-password", verifyJWT, (req, res) => {
+    let { currentPassword, newPassword, confirmationPassword } = req.body;
+
+    if (!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)) {
+        return res.status(403).json({ "error": "Mật khẩu từ 8 tới 20 ký tự và có ít nhất một chữ in hoa và một chữ số" })
+    }
+
+    if (newPassword !== confirmationPassword) {
+        return res.status(403).json({ error: "Mật khẩu không trùng khớp" });
+    }
+
+    User.findOne({ _id: req.user })
+    .then((user) => {
+        if (user.google_auth) {
+            return res.status(403).json({ error: "Bạn không thể đổi mật khẩu" })
+        }
+
+        bcrypt.compare(currentPassword, user.personal_info.password, (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: "Lỗi xảy ra khi thay đổi mật khẩu. Xin vui lòng thử lại!" })
+            }
+
+            if (!result) {
+                return res.status(403).json({ error: "Mật khẩu hiện tại không chính xác" })
+            }
+
+            if (currentPassword === newPassword) {
+                return res.status(403).json({ error: "Mật khẩu không trùng khớp" });
+            }
+
+            bcrypt.hash(newPassword, 10, (err, hashed_password) => {
+                User.findOneAndUpdate({ _id: req.user }, { "personal_info.password": hashed_password })
+                .then((user) => {
+                    return res.status(200).json({ status: "Đã đổi mật khẩu" })
+                }) 
+                .catch(err => {
+                    return res.status(500).json({ error: "Lỗi xảy ra khi cố gắng lưu mật khẩu mới. Xin vui lòng thử lại!" })
+                })
+            })
+        })
+    })
+    .catch(err => {
+        console.log(err);
+        return res.status(500).json({ error: "Không tìm thấy người dùng" })
+    })
+})
+
 server.get("/trending", (req, res) => {
     Novel.find({ draft: false })
     .populate("publisher", "personal_info.username personal_info.profile_img -_id") // populate adds username and profile_img to publisher variable
