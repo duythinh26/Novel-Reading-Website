@@ -65,11 +65,6 @@ const Navbar = () => {
                                 </Link>
                             </li>
                             <li className="float-left h-nav">
-                                <Link to="/dashboard" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-3 xl:py-2 lg:px-2 lg:py-0">
-                                    <span>Dashboard</span>
-                                </Link>
-                            </li>
-                            <li className="float-left h-nav">
                                 <Link to="/thao-luan" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-3 xl:py-2 lg:px-2 lg:py-0">
                                     <span>Thảo luận</span>
                                 </Link>

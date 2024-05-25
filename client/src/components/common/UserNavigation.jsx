@@ -22,16 +22,6 @@ const UserNavigation = () => {
                     <FontAwesomeIcon icon={faUser} /> Tài khoản
                 </Link>
             </li>
-            {/* <li>
-                <Link to={`/dashboard/novels`} className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none">
-                    <FontAwesomeIcon icon={faUser} /> Dashboard
-                </Link>
-            </li>
-            <li>
-                <Link to={`/dashboard/novels`} className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none">
-                    <FontAwesomeIcon icon={faUser} /> Settings
-                </Link>
-            </li> */}
             <li>
                 <Link to="/lich-su" className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none">
                     <FontAwesomeIcon icon={faClockRotateLeft} /> Lịch sử
@@ -45,6 +35,11 @@ const UserNavigation = () => {
             <li>
                 <Link to="/tin-nhan" className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none">
                     <FontAwesomeIcon icon={faEnvelope} /> Tin nhắn
+                </Link>
+            </li>
+            <li>
+                <Link to="/action"className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none">
+                    <i className="fi fi-rr-settings"></i> Hệ thống
                 </Link>
             </li>
             <div className="relative w-full flex items-center gap-2 py-4 opacity-20 uppercase text-black font-bold">

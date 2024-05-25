@@ -12,6 +12,7 @@ import SearchPage from './components/pages/SearchPage';
 import ProfilePage from './components/pages/ProfilePage';
 import PageNotFound from './components/pages/PageNotFound';
 import NovelPage from './components/pages/NovelPage';
+import ChangePassword from './components/common/ChangePassword';
 
 export const UserContext = createContext({})
 
@@ -59,12 +60,13 @@ const App = () => {
             <AuthPage type="signup"/>
           </>
         }/>
-        <Route path='/dashboard' element={<EditorNavbar />}/>
-        <Route path='/dashboard/series' element={
-          <>
-            <Editor />
-          </>
-        }/>
+        <Route path='/action' element={ <EditorNavbar /> }>
+          <Route path='series' element={ <Editor /> }/>
+          <Route path='profile' element={<h1>Profile page</h1>}/>
+          <Route path='password' element={< ChangePassword />}/>
+          <Route path='email' element={<h1>Email page</h1>}/>
+          <Route path='username' element={<h1>Username page</h1>}/>
+        </Route>
         {/* leave this tag at the end of the route / since the path of this route is all path */}
         <Route path='*' element={ <PageNotFound />}/>
       </Routes>
