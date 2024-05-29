@@ -9,6 +9,19 @@ import NovelInProfile from '../common/NovelInProfile';
 import defaultCover from "../../assets/images/user-cover.gif"
 import PageNotFound from './PageNotFound';
 
+export const profileDataStructure = {
+    personal_info: {
+        username: "",
+        profile_img: "",
+        bio: "",
+    },
+    account_info: {
+        total_posts: 0,
+        total_reads: 0,
+    },
+    joinedAt: " ",
+}
+
 const ProfilePage = () => {
 
     let { id: profileId } = useParams();

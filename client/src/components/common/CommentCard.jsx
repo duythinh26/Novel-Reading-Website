@@ -131,7 +131,7 @@ const CommentCard = ({ index, leftValue, commentData }) => {
             <div className="flex gap-1 max-w-full">
                 <div className="w-[50px]">
                     <div className="!mx-1 !my-1">
-                        <img src={profile_img} className="rounded-full w-full h-auto"/>
+                        <img src={profile_img} className="rounded-full w-10 h-10 "/>
                     </div>
                 </div>
                 <div className="w-full min-w-0 rounded-md bg-lightgrey !pt-0 !pb-1 pe-0 ps-1 dark:!bg-zinc">

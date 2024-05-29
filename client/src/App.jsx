@@ -62,10 +62,10 @@ const App = () => {
         }/>
         <Route path='/action' element={ <EditorNavbar /> }>
           <Route path='series' element={ <Editor /> }/>
-          <Route path='profile' element={<h1>Profile page</h1>}/>
-          <Route path='password' element={< ChangePassword />}/>
-          <Route path='email' element={<h1>Email page</h1>}/>
-          <Route path='username' element={<h1>Username page</h1>}/>
+          <Route path='profile' element={ <EditProfile /> }/>
+          <Route path='password' element={ <ChangePassword/> }/>
+          <Route path='email' element={ <h1>Email page</h1> }/>
+          <Route path='username' element={ <h1>Username page</h1> }/>
         </Route>
         {/* leave this tag at the end of the route / since the path of this route is all path */}
         <Route path='*' element={ <PageNotFound />}/>
