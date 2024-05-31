@@ -13,6 +13,7 @@ import ProfilePage from './components/pages/ProfilePage';
 import PageNotFound from './components/pages/PageNotFound';
 import NovelPage from './components/pages/NovelPage';
 import ChangePassword from './components/common/ChangePassword';
+import EditProfile from './components/common/EditProfile';
 
 export const UserContext = createContext({})
 

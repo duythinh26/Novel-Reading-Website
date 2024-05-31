@@ -49,7 +49,7 @@ const NovelInteraction = () => {
                 console.log(err)
             })
         }
-    })
+    }, [])
 
     const handleLike = () => {
         if (access_token) {

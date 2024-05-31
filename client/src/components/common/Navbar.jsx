@@ -1,15 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faEllipsisVertical, faHeart, faBell } from '@fortawesome/free-solid-svg-icons';
 import { Link, Outlet } from "react-router-dom";
 import { UserContext } from "../../App";
 import UserNavigation from "./UserNavigation";
+import axios from "axios";
 
 const Navbar = () => {
 
     const [ userNavPanel, setUserNavPanel ] = useState(false);
 
-    const { userAuth, userAuth: { access_token, profile_img }} = useContext(UserContext);
+    const { userAuth, userAuth: { access_token, profile_img, new_notification_available }, setUserAuth } = useContext(UserContext);
 
     const handleUserNavPanel = () => {
         setUserNavPanel(currentValue => !currentValue)
@@ -20,6 +21,22 @@ const Navbar = () => {
             setUserNavPanel(false)
         }, 200)
     }
+
+    useEffect(() => {
+        if (access_token) {
+            axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/new-notification", {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            })
+            .then(({ data }) => {
+                setUserAuth({ ...userAuth, ...data });
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+    }, [access_token])
     
     // Make sub menu in "Hướng dẫn" part can close when click outside the box
     window.addEventListener('click', function(e) {
@@ -30,6 +47,8 @@ const Navbar = () => {
             }
         })
     })
+
+    console.log(new_notification_available)
 
     return (
         <>
@@ -116,7 +135,12 @@ const Navbar = () => {
                                     <div className="h-nav cursor-pointer float-left">
                                         <Link to="">
                                             <button className="btn btn-circle btn-sm w-icon h-icon xl:m-2 lg:m-1">
-                                                <FontAwesomeIcon icon={faBell} />
+                                                <i className="fi fi-sr-bell"></i>
+                                                {
+                                                    new_notification_available ?
+                                                    <span className="bg-red w-3 h-3 rounded-full absolute z-10 top-4 right-64"></span> 
+                                                    : ""
+                                                }
                                             </button>
                                         </Link>
                                     </div>
