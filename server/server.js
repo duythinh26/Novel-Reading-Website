@@ -705,6 +705,90 @@ server.get("/new-notification", verifyJWT, (req, res) => {
     })
 })
 
+server.post("/novel-published", verifyJWT, (req, res) => {
+    let user_id = req.user;
+
+    let { draft, query, deletedDocCount } = req.body;
+
+    if (deletedDocCount) {
+        skipDocs -= deletedDocCount;
+    }
+
+    let searchConditions = { publisher: user_id, draft };
+
+    if (query) {
+        searchConditions.novel_title = new RegExp(query, 'i');
+    }
+
+    Novel.find(searchConditions)
+    .sort({ publishedAt: -1 })
+    .select("novel_id novel_title novel_banner other_name author artist type_of_novel categories description activity status publishedAt updatedAt -_id")
+    .then(novels => {
+        return res.status(200).json({ novels });
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message });
+    })
+})
+
+server.post("/novel-published-count", (req, res) => {
+    let user_id = req.user;
+
+    let { draft, query } = req.body;
+
+    let searchConditions = { publisher: user_id, draft };
+
+    if (query) {
+        searchConditions.novel_title = new RegExp(query, 'i');
+    }
+
+    Novel.countDocuments(searchConditions)
+    .then(count => {
+        return res.status(200).json({ totalDocs: count })
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message })
+    })
+})
+
+server.post("/delete-novel", verifyJWT, (req, res) => {
+    let user_id = req.user;
+    let { novel_id } = req.body;
+
+    Novel.findOneAndDelete({ novel_id })
+    .then(novel => {
+        Notification.deleteMany({ novel: novel._id })
+        .then(data => {
+            console.log("Đã xóa tắt cả thông báo");
+        })
+        .catch(err => {
+            console.log("Có lỗi khi xóa thông báo");
+        })
+
+        Comment.deleteMany({ novel: novel._id })
+        .then(data => {
+            console.log("Đã xóa tắt cả bình luận");
+        })
+        .catch(err => {
+            console.log("Có lỗi khi xóa bình luận");
+        })
+
+        User.findOneAndUpdate({ _id: user_id }, { $pull: { novel: novel_id }, $inc: { "account_info.total_posts": -1} })
+        .then(user => {
+            console.log("Đã xóa truyện");
+        })
+        .catch(err => {
+            console.log("Có lỗi khi xóa truyện");
+        })
+
+        return res.status(200).json({ status: "Đã hoàn thành" });
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
