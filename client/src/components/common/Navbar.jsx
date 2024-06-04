@@ -48,8 +48,6 @@ const Navbar = () => {
         })
     })
 
-    console.log(new_notification_available)
-
     return (
         <>
             <div className="bg-white-smoke fixed left-0 top-0 w-full h-nav z-50">

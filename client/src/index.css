@@ -367,6 +367,16 @@
         content: " ";
         display: table;
     }
+
+    
+    th::before,
+    th::after,
+    tr::before,
+    tr::after,
+    td::before,
+    td::after {
+        content: none !important;
+    }
 }
 
 @layer utilities {

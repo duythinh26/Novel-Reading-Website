@@ -14,6 +14,7 @@ import PageNotFound from './components/pages/PageNotFound';
 import NovelPage from './components/pages/NovelPage';
 import ChangePassword from './components/common/ChangePassword';
 import EditProfile from './components/common/EditProfile';
+import ManageNovels from './components/common/ManageNovels';
 
 export const UserContext = createContext({})
 
@@ -61,7 +62,12 @@ const App = () => {
             <AuthPage type="signup"/>
           </>
         }/>
-        <Route path='/action' element={ <EditorNavbar /> }>
+        <Route path='/action' element={ 
+          <>
+            <EditorNavbar /> 
+          </>
+        }>
+          <Route path='' element={ <ManageNovels /> }/>
           <Route path='series' element={ <Editor /> }/>
           <Route path='profile' element={ <EditProfile /> }/>
           <Route path='password' element={ <ChangePassword/> }/>

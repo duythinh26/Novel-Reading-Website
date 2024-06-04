@@ -170,7 +170,7 @@ const NovelEditor = () => {
 
             // After 500 miliseconds, navigate user to homepage
             setTimeout(() => {
-                navigate("/dashboard")
+                navigate("/")
             }, 500);
         })
         .catch(( { response } ) => { // Must destructor the data to get the error if it has
@@ -221,7 +221,7 @@ const NovelEditor = () => {
 
     //         // After 500 miliseconds, navigate user to homepage
     //         setTimeout(() => {
-    //             navigate("/dashboard")
+    //             navigate("/")
     //         }, 500);
     //     })
     //     .catch(( { response } ) => { // Must destructor the data to get the error if it has
