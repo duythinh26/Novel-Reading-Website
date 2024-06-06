@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Link, Navigate, Outlet } from 'react-router-dom'
 import { UserContext } from '../../App';
-import { NovelContext } from '../pages/Editor';
 
 const EditorNavbar = () => {
 

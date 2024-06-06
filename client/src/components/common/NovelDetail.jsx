@@ -1,263 +1,23 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { uploadImage } from './aws.jsx';
-import { Toaster, toast } from "react-hot-toast";
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import novelCategoriesOptions from './novelCategoriesOptions';
-import { NovelContext } from '../pages/Editor';
 import { Editor } from '@tinymce/tinymce-react';
-import axios from 'axios';
-import { UserContext } from '../../App';
+import { useParams } from 'react-router-dom';
 
-const NovelEditor = () => {
+const NovelDetail = () => {
 
-    var novelTitleRef, novelCoverRef = useRef(); 
-    let { novel, setNovel } = useContext(NovelContext);
+    let { novel_id } = useParams();
 
-    let { userAuth: { access_token } } = useContext(UserContext);
-
-    let navigate = useNavigate();
-
-    let { 
-        novel_title, 
-        other_name, 
-        sensitive_content, 
-        novel_banner,
-        author,
-        artist,
-        type_of_novel,
-        categories,
-        description,
-        note,
-        status,
-        episode,
-        publisher,
-    } = novel;
-
-    const handleTitleChange = (e) => {
-        let input = e.target;
-
-        /**
-         * Destructor the novel state
-         * 
-         * ...novel give the whole of a novel's data to access
-         * 
-         * title: input.value allow access to title and change value to the input value
-         */
-        setNovel({ ...novel, novel_title: input.value })
-    }
-
-    const handleOthernameChange = (e) => {
-        let input = e.target;
-
-        setNovel({ ...novel, other_name: input.value })
-    }
-
-    const handleMatureChange = (e) => {
-        let input = e.target;
-
-        setNovel({ ...novel, sensitive_content: input.checked })
-    }
-
-    const handleBannerUpload = (e) => {
-        let img = e.target.files[0];
-
-        if (img) {
-            let loadingToast = toast.loading("Bạn chờ tí nhé ...")
-
-            uploadImage(img).then((url) => {
-                if (url) {
-                    toast.dismiss(loadingToast);
-                    toast.success("Đã đăng ảnh thành công!");
-
-                    novelCoverRef.current.className = "block max-w-[100px] max-h-[100px] w-auto h-auto z-20";
-
-                    // Set novel banner to context
-                    setNovel({ ...novel, novel_banner: url });
-                }
-            })
-            .catch(err => {
-                toast.dismiss(loadingToast);
-                return toast.error(err);
-            })
-        }
-    }
-
-    const handleAuthorChange = (e) => {
-        let input = e.target;
-
-        setNovel({ ...novel, author: input.value })
-    }
-
-    const handleArtistChange = (e) => {
-        setNovel({ ...novel, artist: e.target.value })
-    }
-
-    const handleTypeChange = (e) => {
-        setNovel({ ...novel, type_of_novel: e.target.selectedOptions[0].textContent})
-    }
-
-    const handleCategoriesChange = (e) => {
-        setNovel({ ...novel, categories: e.map(option => option.label)});
-    }
-
-    const handleDescriptionChange = (value, editor) => {
-        setNovel({ ...novel, description: editor.getContent({ format: 'text' })})
-        // setNovel({ ...novel, description: e.replace(/<p>(.*?)<\/p>/g, '$1')})
-    }
-
-    const handleNoteChange = (value, editor) => {
-        setNovel({ ...novel, note: editor.getContent({ format: 'text' })})
-    }
-
-    const handleStatusChange = (e) => {
-        setNovel({ ...novel, status: e.target.selectedOptions[0].textContent})
-    }
-
-    const handlePublishEvent = (e) => {
-
-        if (e.target.className.includes("btn-disabled")) {
-            return;
-        }
-
-        if (!novel_title.length) {
-            return toast.error("Truyện đang thiếu tiêu đề")
-        }
-
-        if (!author.length) {
-            return toast.error("Truyện đang thiếu tác giả")
-        }
-
-        if (!categories.length) {
-            return toast.error("Truyện đang thiếu thể loại")
-        }
-
-        if (!description.length) {
-            return toast.error("Truyện đang thiếu tóm tắt")
-        }
-
-        let loadingToast = toast.loading("Bạn đợi chút nhé ...")
-
-        // Make disable button to prevent multiple data sent
-        e.target.classList.add("btn-disabled");
-
-        let novelObject = {
-            novel_title, 
-            other_name, 
-            sensitive_content, 
-            novel_banner,
-            author,
-            artist,
-            type_of_novel,
-            categories,
-            description,
-            note,
-            status,
-            episode,
-            draft: false
-        }
-
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-series", novelObject, {
-            headers: {
-                'Authorization': `Bearer ${access_token}`
-            }
-        })
-        .then(() => {
-            e.target.classList.remove("btn-disabled");
-
-            toast.dismiss(loadingToast);
-            toast.success("Đẫ tạo truyện thành công");
-
-            // After 500 miliseconds, navigate user to homepage
-            setTimeout(() => {
-                navigate("/")
-            }, 500);
-        })
-        .catch(( { response } ) => { // Must destructor the data to get the error if it has
-            e.target.classList.remove("btn-disabled");
-            toast.dismiss(loadingToast);
-            
-            return toast.error(response.data.error);
-        })
-    }
-
-    // const handleSaveDraft = (e) => {
-
-    //     if (e.target.className.includes("btn-disabled")) {
-    //         return;
-    //     }
-
-    //     let loadingToast = toast.loading("Bạn đợi chút nhé ...")
-
-    //     // Make disable button to prevent multiple data sent
-    //     e.target.classList.add("btn-disabled");
-
-    //     let novelObject = {
-    //         novel_title, 
-    //         other_name, 
-    //         sensitive_content, 
-    //         novel_banner,
-    //         author,
-    //         artist,
-    //         type_of_novel,
-    //         categories,
-    //         description,
-    //         note,
-    //         status,
-    //         episode,
-    //         draft: true
-    //     }
-
-    //     axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-series", novelObject, {
-    //         headers: {
-    //             'Authorization': `Bearer ${access_token}`
-    //         }
-    //     })
-    //     .then(() => {
-    //         e.target.classList.remove("btn-disabled");
-
-    //         toast.dismiss(loadingToast);
-    //         toast.success("Đẫ lưu nháp thành công");
-
-    //         // After 500 miliseconds, navigate user to homepage
-    //         setTimeout(() => {
-    //             navigate("/")
-    //         }, 500);
-    //     })
-    //     .catch(( { response } ) => { // Must destructor the data to get the error if it has
-    //         e.target.classList.remove("btn-disabled");
-    //         toast.dismiss(loadingToast);
-            
-    //         return toast.error(response.data.error);
-    //     })
-    // }
-
-    // const handleImageError = (e) => {
-    //     let img = e.target;
-    //     img.src = "";
-    //     console.log(first)
-    // }
-
-    // Close the open details when click to other details or click outside
-    var details = [...document.querySelectorAll('details')];
-    document.addEventListener('click', function(e) {
-        if (!details.some(f => f.contains(e.target))) {
-            details.forEach(f => f.removeAttribute('open'));
-        } else {
-            details.forEach(f => !f.contains(e.target) ? f.removeAttribute('open') : '');
-        }
-    })
+    console.log(novel_id)
 
     return (
-        <>
-            <Toaster />
-            <div className="container mx-auto px-[15px]">
-                <div className="mx-[-15px]">
-                    <div className="lg:mx-[10%] lg:w-5/6 lg:float-left relative min-h-[1px] px-[15px]">
-                        <div className="bg-white border rounded mb-5 border-solid border-gainsboro">
-                            <div className="text-gray bg-neutral-100 border-gainsboro px-4 py-2.5 rounded-t border-b-gainsboro border-b border-solid">Series</div>
-                            <div className="p-4">
-                                <form>
+            <div className="lg:w-[970px] md:w-[750px] mx-auto px-[15px]">
+                <div className="row">
+                    <div className="lg:ml-[8.33333333%] lg:w-5/6 lg:float-left relative min-h-[1px] px-[15px]">
+                        <div className="border-[#dddddd] bg-white border rounded shadow-[0_1px_1px_rgba(0,0,0,0.05)] mb-5 border-solid">
+                            <div className="text-[#333333] bg-neutral-100 px-[15px] py-[10px] rounded-t-[3px] border-b-transparent border-[#dddddd] border-b border-solid">Series</div>
+                            <div className="p-[15px]">
+                            <form>
                                     {/* If an element is taller than the element containing it, and it is floated, it will overflow outside of its container.
                                     Using clearfix "hack" to fix this problem */}
                                     <div className="mb-[15px] clearfix">
@@ -267,7 +27,7 @@ const NovelEditor = () => {
                                                 type="text"
                                                 name="title"
                                                 className="input input-info w-full h-input border border-solid border-silver"
-                                                onChange={handleTitleChange}
+                                                // onChange={handleTitleChange}
                                             />
                                         </div>
                                     </div>
@@ -278,7 +38,7 @@ const NovelEditor = () => {
                                                 type="text"
                                                 name="altname"
                                                 className="input input-info w-full h-input border border-solid border-silver" 
-                                                onChange={handleOthernameChange}
+                                                // onChange={handleOthernameChange}
                                             />
                                         </div>
                                     </div>
@@ -290,7 +50,7 @@ const NovelEditor = () => {
                                                 name='is_mature' 
                                                 value={1} 
                                                 className='mt-[9px]'
-                                                onChange={handleMatureChange}
+                                                // onChange={handleMatureChange}
                                             />
                                         </div>
                                     </div>
@@ -306,13 +66,13 @@ const NovelEditor = () => {
                                                             type="file"
                                                             accept=".png, .jpg, .jpeg"
                                                             className="hidden"
-                                                            onChange={handleBannerUpload}
+                                                            // onChange={handleBannerUpload}
                                                         />
                                                     </label>
                                                 </div>
                                             </div>
                                             <img 
-                                                ref={novelCoverRef} 
+                                                // ref={novelCoverRef} 
                                                 src={novel_banner} 
                                                 className='hidden' 
                                                 // onError={handleImageError}
@@ -326,7 +86,7 @@ const NovelEditor = () => {
                                                 type="text"
                                                 name="author"
                                                 className="input input-info w-full h-input border border-solid border-silver"
-                                                onChange={handleAuthorChange}
+                                                // onChange={handleAuthorChange}
                                             />
                                         </div>
                                     </div>
@@ -337,7 +97,7 @@ const NovelEditor = () => {
                                                 type="text"
                                                 name="illustrator"
                                                 className="input input-info w-full h-input border border-solid border-silver" 
-                                                onChange={handleArtistChange}
+                                                // onChange={handleArtistChange}
                                             />
                                         </div>
                                     </div>
@@ -349,7 +109,7 @@ const NovelEditor = () => {
                                                 id="select-type" 
                                                 defaultValue={1}
                                                 className='select select-bordered w-44 text-base px-[10px] py-[5px] leading-normal border-black focus:outline-none focus:border-black'
-                                                onChange={handleTypeChange}
+                                                // onChange={handleTypeChange}
                                             >
                                                 <option value="1">Truyện dịch</option>
                                                 <option value="2">Truyện convert</option>
@@ -365,7 +125,7 @@ const NovelEditor = () => {
                                                 options={novelCategoriesOptions}
                                                 placeholder=""
                                                 className='border border-solid rounded-md border-silver z-20'
-                                                onChange={handleCategoriesChange}
+                                                // onChange={handleCategoriesChange}
                                             />
                                         </div> 
                                     </div>
@@ -393,7 +153,7 @@ const NovelEditor = () => {
                                                         editor.getContent()
                                                     }
                                                 }}
-                                                onEditorChange={handleDescriptionChange}
+                                                // onEditorChange={handleDescriptionChange}
                                             />
                                         </div>
                                     </div>
@@ -421,7 +181,7 @@ const NovelEditor = () => {
                                                         editor.getContent();
                                                     }
                                                 }}
-                                                onEditorChange={handleNoteChange}
+                                                // onEditorChange={handleNoteChange}
                                             />
                                         </div>
                                     </div>
@@ -433,7 +193,7 @@ const NovelEditor = () => {
                                                 id="select-type" 
                                                 defaultValue={1}
                                                 className='select select-bordered w-44 text-base px-[10px] py-[5px] leading-normal border-black focus:outline-none focus:border-black'
-                                                onChange={handleStatusChange}
+                                                // onChange={handleStatusChange}
                                             >
                                                 <option value="1">Đang tiến hành</option>
                                                 <option value="2">Tạm ngưng</option>
@@ -446,7 +206,7 @@ const NovelEditor = () => {
                                             <button 
                                                 type='button' // Default type of button is submit
                                                 className='btn btn-confirm text-white text-base'
-                                                onClick={handlePublishEvent}
+                                                // onClick={handlePublishEvent}
                                             >
                                                 Thêm truyện
                                             </button>
@@ -466,8 +226,7 @@ const NovelEditor = () => {
                     </div>
                 </div>
             </div>
-        </>
     )
 }
 
-export default NovelEditor
+export default NovelDetail

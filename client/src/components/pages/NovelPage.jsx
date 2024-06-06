@@ -13,7 +13,7 @@ export const NovelContext = createContext({ });
 
 const NovelPage = () => {
 
-    let { novel_id } = useParams();
+    let { novel_id } = useParams(); 
 
     const [ novel, setNovel ] = useState(novelStructure);
     const [ moreDetail, setMoreDetail ] = useState(false);

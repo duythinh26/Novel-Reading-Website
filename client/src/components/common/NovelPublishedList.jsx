@@ -6,7 +6,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import NoDataMessage from './NoDataMessage';
 import NovelPublishedCard from './NovelPublishedCard';
 
-const ManageNovels = () => {
+const NovelPublishedList = () => {
 
     const [ novels, setNovels ] = useState(null);
     const [ drafts, setDrafts ] = useState(null);
@@ -146,4 +146,4 @@ const ManageNovels = () => {
     )
 }
 
-export default ManageNovels;
+export default NovelPublishedList;

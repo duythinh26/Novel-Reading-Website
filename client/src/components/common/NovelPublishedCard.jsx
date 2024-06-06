@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { UserContext } from '../../App';
 import axios from 'axios';
 
-
 const deleteNovel = (novel, access_token, target) => {
 
     let { index, novel_id, setStateFunc } = novel;
@@ -62,9 +61,12 @@ const NovelPublishedCard = ({ novel }) => {
             <td className='leading-[1.42857143] p-[8px] border-t-[#dddddd] border-t border-solid !align-middle max-md:hidden'>{status}</td>
             <td className='leading-[1.42857143] p-[8px] border-t-[#dddddd] border-t border-solid !align-middle max-lg:hidden'>{type_of_novel}</td>
             <td className='leading-[1.42857143] p-[8px] border-t-[#dddddd] border-t border-solid !align-middle'>
-                <button className='btn mr-8 max-sm:mr-2 text-white bg-[#5bc0de] border-[#46b8da] hover:bg-[#31b0d5] hover:border-[#269abc]'>
+                <a 
+                    href={`/action/manage/${novel_id}`}
+                    className='btn mr-8 max-sm:mr-2 text-white bg-[#5bc0de] border-[#46b8da] hover:bg-[#31b0d5] hover:border-[#269abc]'
+                >
                     <i className="fi fi-rr-pen-square text-2xl"></i>
-                </button>
+                </a>
                 <button 
                     className='btn mr-8 max-sm:mr-2 text-white bg-[#f0ad4e] border-[#eea236] hover:bg-[#ec971f] hover:border-[#d58512]'
                     onClick={(e) => deleteNovel(novel, access_token, e.target)}

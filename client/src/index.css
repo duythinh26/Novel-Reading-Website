@@ -377,6 +377,47 @@
     td::after {
         content: none !important;
     }
+
+    .tree {
+        margin: 0 0 0 1em;
+        padding: 0;
+        list-style: none;
+        color: #369;
+        position: relative;
+    }
+
+    .tree:before {
+        content: "";
+        display: block;
+        width: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-left: 1px solid;
+    }
+
+    .tree li {
+        margin: 0;
+        padding: 0 1.5em;
+        padding-bottom: 0.5em;
+        line-height: 1.675em;
+        font-weight: bold;
+        position: relative;
+        margin-top: 10px;
+    }
+    
+    .tree li:before {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 0;
+        border-top: 1px solid;
+        margin-top: -1px;
+        position: absolute;
+        top: 1em;
+        left: 0;
+    }
 }
 
 @layer utilities {
