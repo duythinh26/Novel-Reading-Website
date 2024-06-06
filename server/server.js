@@ -789,6 +789,27 @@ server.post("/delete-novel", verifyJWT, (req, res) => {
     })
 })
 
+server.put("/update-novel", verifyJWT, async (req, res) => {
+    let { novel_id, novel_title, novel_banner, other_name, sensitive_content, author, artist, type_of_novel, categories, description, note, status } = req.body;
+
+    try {
+        if (!req.body) {
+            return res.status(400).send({ message: "Send all required fields" })
+        }
+
+        await Novel.findOneAndUpdate({ novel_id }, { "novel_title": novel_title, "novel_banner": novel_banner, "other_name": other_name, "sensitive_content": sensitive_content, "novel_banner": novel_banner, "author": author, "artist": artist, "type_of_novel": type_of_novel, "categories": categories, "description": description, "note": note, "status": status })
+        .then((novel) => {
+            return res.status(200).json({ message: "Đã cập nhật truyện" })
+        })
+        .catch(err => {
+            return res.status(404).json({ message: err.message })
+        })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message })
+    }
+})
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
