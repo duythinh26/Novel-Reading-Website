@@ -2,29 +2,63 @@ import mongoose, { Schema } from "mongoose";
 
 const episodeSchema = mongoose.Schema({
 
-    episode_info: {
-        episode_id: {
-            type: String,
-            required: true,
-            unique: true,
+    episode_id: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    episode_title: {
+        type: String,
+        required: true,
+    },
+    episode_banner: {
+        type: String,
+    },
+    description: {
+        type: String,
+    },
+    publisher: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'users'
+    },
+    activity: {
+        total_likes: {
+            type: Number,
+            default: 0
         },
-        episode_title: {
-            type: String,
-            required: true,
+        total_comments: {
+            type: Number,
+            default: 0
         },
-        episode_banner: {
-            type: String,
+        total_reads: {
+            type: Number,
+            default: 0
         },
-        description: {
-            type: String,
-            required: true
+        total_parent_comments: {
+            type: Number,
+            default: 0
         },
-        poster: {
-            type: Schema.Types.ObjectId,
-            required: true,
-            ref: 'users'
-        },
-    }
+    },
+    comments: {
+        type: [ Schema.Types.ObjectId ],
+        ref: 'comments'
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    chapter: {
+        type: [ Schema.Types.ObjectId ],
+        // required: true,
+        ref: 'chapters',
+        default: [],
+    },
+    belonged_to: {
+        type: Schema.Types.ObjectId,
+        require: true,
+        ref: 'novels'
+    },
 }, 
 { 
     timestamps: {

@@ -11,6 +11,7 @@ import User from "./Schema/User.js";
 import Novel from "./Schema/Novel.js";
 import Notification from "./Schema/Notification.js"
 import Comment from "./Schema/Comment.js";
+import Episode from "./Schema/Episode.js";
 
 const server = express();
 let PORT = 3000;
@@ -807,6 +808,59 @@ server.put("/update-novel", verifyJWT, async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: error.message })
+    }
+})
+
+server.post('/create-episode', verifyJWT, async (req, res) => {
+    let publisherId = req.user;
+
+    let {
+        episode_title, 
+        episode_banner,
+        description,
+        price,
+        novel_id
+    } = req.body;
+
+    if (!episode_title.length) {
+        return res.status(403).json({ error: "Episode chưa có tiêu đề" });
+    }
+    
+    if (!description.length) {
+        return res.status(403).json({ error: "Episode chưa có tóm tắt" });
+    }
+
+    if (price == null) {
+        return res.status(403).json({ error: "Episode chưa có giá" });
+    }
+    
+    try {
+        let novel = await Novel.findOne({ novel_id });
+
+        if (!novel) {
+            return res.status(404).json({ error: "Novel không tồn tại" });
+        }
+
+        let episode_id = nanoid();
+
+        let episode = new Episode({
+            episode_id,
+            episode_title,
+            episode_banner,
+            description,
+            price,
+            publisher: publisherId,
+            belonged_to: novel._id,
+        });
+
+        await episode.save();
+
+        novel.episode.push(episode._id);
+        await novel.save();
+
+        return res.status(200).json({ id: episode.episode_id });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
     }
 })
 

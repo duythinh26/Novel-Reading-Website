@@ -16,7 +16,6 @@ const novelSchema = mongoose.Schema({
     },
     sensitive_content: {
         type: Boolean,
-        required: false,
         default: false,
     },
     novel_banner: {
