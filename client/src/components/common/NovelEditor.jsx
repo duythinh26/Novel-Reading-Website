@@ -102,12 +102,12 @@ const NovelEditor = () => {
     }
 
     const handleDescriptionChange = (value, editor) => {
-        setNovel({ ...novel, description: editor.getContent({ format: 'text' })})
-        // setNovel({ ...novel, description: e.replace(/<p>(.*?)<\/p>/g, '$1')})
+        setNovel({ ...novel, description: editor.getContent()
+        })
     }
 
     const handleNoteChange = (value, editor) => {
-        setNovel({ ...novel, note: editor.getContent({ format: 'text' })})
+        setNovel({ ...novel, note: editor.getContent() })
     }
 
     const handleStatusChange = (e) => {

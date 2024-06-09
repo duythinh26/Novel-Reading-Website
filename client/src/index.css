@@ -418,6 +418,10 @@
         top: 1em;
         left: 0;
     }
+
+    .desc p {
+        @apply mb-[0.5em];
+    }
 }
 
 @layer utilities {

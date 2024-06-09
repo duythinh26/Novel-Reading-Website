@@ -14,6 +14,8 @@ const ManageNovel = () => {
     let { novel_id } = useParams();
 
     let [ novel, setNovel ] = useState(novelStructure);
+    const [ novelSubMenu, setNovelSubMenu ] = useState(false);
+
     let { userAuth: { access_token } } = useContext(UserContext);
 
     var novelCoverRef = useRef();
@@ -95,12 +97,11 @@ const ManageNovel = () => {
     }
 
     const handleDescriptionChange = (value, editor) => {
-        setNovel({ ...novel, description: editor.getContent({ format: 'text' })})
-        // setNovel({ ...novel, description: e.replace(/<p>(.*?)<\/p>/g, '$1')})
+        setNovel({ ...novel, description: editor.getContent() })
     }
 
     const handleNoteChange = (value, editor) => {
-        setNovel({ ...novel, note: editor.getContent({ format: 'text' })})
+        setNovel({ ...novel, note: editor.getContent() })
     }
 
     const handleStatusChange = (e) => {
@@ -167,13 +168,29 @@ const ManageNovel = () => {
         })
     }
 
+    const handleSubMenu = () => {
+        setNovelSubMenu(currentValue => !currentValue)
+    }
+
     return (
         <>
-            <div className="container mx-auto px-[15px]">
+            <div className="container mx-auto px-[15px]"> 
                 <div className="row">
                     <div className="lg:ml-[8.33333333%] lg:w-5/6 lg:float-left relative min-h-[1px] px-[15px]">
                         <div className="border-[#dddddd] bg-white border rounded shadow-[0_1px_1px_rgba(0,0,0,0.05)] mb-5 border-solid">
-                            <div className="text-[#333333] bg-neutral-100 px-[15px] py-[10px] rounded-t-[3px] border-b-transparent border-[#dddddd] border-b border-solid">Series</div>
+                            <div className="flex items-center justify-between text-[#333333] bg-neutral-100 px-[15px] py-[10px] rounded-t-[3px] border-b-transparent border-[#dddddd] border-b border-solid">
+                                <span>Series</span>
+                                <button onClick={handleSubMenu} className="bg-blue-500 cursor-pointer border-[none] bg-blue-500 rounded">
+                                    <i className="fi fi-rr-menu-burger"></i>
+                                </button>
+                                {
+                                    novelSubMenu ?
+                                    <div class="right-4 top-11 absolute bg-white border border-[#dddddd] rounded shadow-md">
+                                        <a href={`/action/series/${novel_id}/chapter`} class="block px-4 py-2 hover:bg-gray-100">Thêm chương</a>
+                                        <a href='#'class="block px-4 py-2 hover:bg-gray-100">Sửa chương</a>
+                                    </div> : ""
+                                }
+                            </div>
                             <div className="p-[15px]">
                             <form>
                                     {/* If an element is taller than the element containing it, and it is floated, it will overflow outside of its container.

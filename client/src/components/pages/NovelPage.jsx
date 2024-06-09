@@ -104,7 +104,7 @@ const NovelPage = () => {
                             {
                                 username === publisher_username ?
                                 <div className="!text-right pb-[20px]">
-                                    <a href="#" className="button button-green">
+                                    <a href={`/action/series/${novel_id}`} className="button button-green">
                                         <i className="fi fi-rr-edit mr-[6px]"></i>Chỉnh sửa
                                     </a>
                                 </div>
@@ -228,7 +228,10 @@ const NovelPage = () => {
                                                         moreDetail === false ?
                                                         <>
                                                             <div className="max-h-[100px] overflow-hidden relative mb-0">
-                                                                <p className="leading-6">{description}</p>
+                                                                <div 
+                                                                    className="leading-6 desc"
+                                                                    dangerouslySetInnerHTML={{ __html: description }}
+                                                                ></div>
                                                             </div>
                                                             <div className="more-detail hover:text-green" onClick={handleMoreDetail}>
                                                                 <div className="cursor-pointer font-bold absolute pl-0 pr-[10px] py-[10px] bottom-0 inset-x-0">Xem thêm</div>
@@ -237,7 +240,10 @@ const NovelPage = () => {
                                                         :
                                                         <>
                                                             <div className="max-h-[none] overflow-hidden relative mb-0">
-                                                                <p className="leading-6">{description}</p>
+                                                                <div 
+                                                                    className="leading-6 desc"
+                                                                    dangerouslySetInnerHTML={{ __html: description }}
+                                                                ></div>
                                                             </div>
                                                             <div className="hover:text-green">
                                                                 <div className="cursor-pointer font-bold w-full pt-2" onClick={handleMoreDetail}>Ẩn đi</div>
@@ -279,7 +285,10 @@ const NovelPage = () => {
                                 </header>
                                 <main className="p-[10px] !lg:block">
                                     <div className="text-breakword">
-                                        <p className="m-0">{note}</p>
+                                        <div 
+                                            className="m-0"
+                                            dangerouslySetInnerHTML={{ __html: note }}
+                                        ></div>
                                     </div>
                                 </main>
                             </section>
@@ -297,6 +306,7 @@ const NovelPage = () => {
                             </section>
                         </div>
                         <div className="!float-left relative w-full px-[15px] flex-[0_0_100%] max-w-full lg:flex-[0_0_75%] lg:max-w-[75%]">
+                            <div className=""></div>
                             <CommentsContainer />
                         </div>
                     </div>

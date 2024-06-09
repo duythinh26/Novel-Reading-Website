@@ -121,8 +121,8 @@ const NovelPublishedList = () => {
                                         <tbody>
                                             <tr>
                                                 <th className='leading-[1.42857143] align-top p-[8px] border-t-[#dddddd] border-t border-solid static float-none table-cell w-7/12 xl:w-1/2 lg:w-5/12 md:w-1/2 min-h-[1px] text-left'>Tên truyện</th>
-                                                <th className='leading-[1.42857143] align-top p-2 border-t-[#dddddd] border-t border-solid static float-none table-cell xl:w-1/6 lg:w-1/6 md:w-1/4 min-h-[1px] text-left max-md:hidden'>Trạng thái</th>
                                                 <th className='leading-[1.42857143] align-top p-2 border-t-[#dddddd] border-t border-solid static float-none table-cell min-h-[1px] text-left max-lg:hidden'>Loại truyện</th>
+                                                <th className='leading-[1.42857143] align-top p-2 border-t-[#dddddd] border-t border-solid static float-none table-cell xl:w-1/6 lg:w-1/6 md:w-1/4 min-h-[1px] text-left max-md:hidden'>Trạng thái</th>
                                                 <th className='leading-[1.42857143] align-top p-2 border-t-[#dddddd] border-t border-solid static float-none table-cell w-5/12 xl:w-1/6 lg:w-1/4 md:w-1/4 min-h-[1px] text-left'>Quản lý</th>
                                             </tr>
                                             {
