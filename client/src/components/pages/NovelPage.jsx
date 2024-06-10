@@ -8,6 +8,7 @@ import { novelStructure } from '../common/novelStructure';
 import NovelInteraction from '../common/NovelInteraction';
 import { UserContext } from '../../App';
 import CommentsContainer, { fetchComments } from '../common/CommentsContainer';
+import EpisodeInNovel from '../common/EpisodeInNovel';
 
 export const NovelContext = createContext({ });
 
@@ -63,7 +64,7 @@ const NovelPage = () => {
             console.log(err);
         })
     }
-    
+
     useEffect(() => {
         resetStates();
 
@@ -306,7 +307,15 @@ const NovelPage = () => {
                             </section>
                         </div>
                         <div className="!float-left relative w-full px-[15px] flex-[0_0_100%] max-w-full lg:flex-[0_0_75%] lg:max-w-[75%]">
-                            <div className=""></div>
+                            {
+                                episode.length ? 
+                                episode.map((episode, i) => {
+                                    console.log(episode)
+                                    return <section key={i} className='bg-profile rounded border overflow-hidden border-[#e4e5e7_#dadbdd_hsla(214,4%,80%,0.8)] border-solid mb-[20px]'>
+                                        <EpisodeInNovel episode_id={episode} />
+                                    </section>
+                                }) : <></>
+                            }
                             <CommentsContainer />
                         </div>
                     </div>
