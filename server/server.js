@@ -864,6 +864,34 @@ server.post('/create-episode', verifyJWT, async (req, res) => {
     }
 })
 
+server.post("/get-episodes", (req, res) => {
+    // Retrieve id from req
+    let { episode_id } = req.body;
+
+    Episode.findByIdAndUpdate(episode_id, { $inc: { "activity.total_reads": 1 }})
+    .populate("publisher", "personal_info.username personal_info.profile_img")
+    .then(episode => {
+        if (!episode) {
+            return res.status(404).json({ error: 'Episode not found' });
+        }
+
+        User.findOneAndUpdate({ "personal_info.username": episode.publisher.personal_info.username }, 
+        {
+            $inc: { "account_info.total_reads": 1 }
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message })
+        })
+
+        return res.status(200).json({ episode });
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message });
+    });
+
+    
+})
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
