@@ -31,32 +31,6 @@ const userSchema = mongoose.Schema({
             } 
         },
     },
-    // social_links: {
-    //     youtube: {
-    //         type: String,
-    //         default: "",
-    //     },
-    //     instagram: {
-    //         type: String,
-    //         default: "",
-    //     },
-    //     facebook: {
-    //         type: String,
-    //         default: "",
-    //     },
-    //     twitter: {
-    //         type: String,
-    //         default: "",
-    //     },
-    //     github: {
-    //         type: String,
-    //         default: "",
-    //     },
-    //     website: {
-    //         type: String,
-    //         default: "",
-    //     }
-    // },
     account_info:{
         total_posts: {
             type: Number,
@@ -73,7 +47,18 @@ const userSchema = mongoose.Schema({
         total_comments: {
             type: Number,
             default: 0
-        }
+        },
+        coin: {
+            type: Number,
+            default: 0
+        },
+        favorite: [
+
+        ],
+        ownedEpisode: {
+            type: [ Schema.Types.ObjectId ],
+            ref: 'comments'
+        },
     },
     google_auth: {
         type: Boolean,

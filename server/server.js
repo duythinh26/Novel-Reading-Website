@@ -575,11 +575,11 @@ server.post("/add-comment", verifyJWT, (req, res) => {
         novel_publisher,
         comment,
         commented_by: user_id,
+        isReply: !!replying_to,
     }
 
     if (replying_to) {
         commentObject.parent = replying_to;
-        comment.isReply = true;
     }
 
     new Comment(commentObject).save().then(async commentFile => {
@@ -723,7 +723,7 @@ server.post("/novel-published", verifyJWT, (req, res) => {
 
     Novel.find(searchConditions)
     .sort({ publishedAt: -1 })
-    .select("novel_id novel_title novel_banner other_name author artist type_of_novel categories description activity status publishedAt updatedAt -_id")
+    .select("-_id")
     .then(novels => {
         return res.status(200).json({ novels });
     })
@@ -888,8 +888,68 @@ server.post("/get-episodes", (req, res) => {
     .catch(err => {
         return res.status(500).json({ error: err.message });
     });
+})
 
-    
+server.post("/buy-coins", async (req, res) => {
+    let {
+        user_id,
+        card_number,
+        card_expiry,
+        card_cvv,
+        amount
+    } = req.body;
+
+    if (!card_number || !card_expiry || !card_cvv) {
+        return res.status(400).json({ error: 'Inavlid credit card information' });
+    }
+
+    try {
+        const user = await User.findById(user_id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        user.account_info.coin += amount;
+        await user.save();
+
+        return res.status(200).json({ message: 'Coins purchased successfully', user });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+server.post("/purchase-episode", verifyJWT, async (req, res) => {
+    const user_id = req.user;
+
+    const { _id } = req.body;
+
+    try {
+        const episode = await Episode.findOne({ _id });
+        const user = await User.findById(user_id);
+
+        if (!episode) {
+            return res.status(404).json({ error: "Episode không tồn tại" });
+        }
+
+        // Kiểm tra nếu user đã sở hữu tập này
+        if (user.account_info.ownedEpisode.includes(episode._id)) {
+            return res.status(400).json({ success: false, message: "Bạn đã sở hữu tập này rồi." });
+        }
+
+        if (user.account_info.coin >= episode.price) {
+            user.account_info.coin -= episode.price;
+            user.account_info.ownedEpisode.push(episode._id);
+
+            await user.save();
+
+            return res.json({ success: true, message: "Thanh toán thành công!" });
+        } else {
+            return res.json({ success: false, message: "Không đủ xu. Vui lòng nạp thêm xu." });
+        }
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
 })
 
 server.listen(PORT, () => {
