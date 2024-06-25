@@ -40,7 +40,7 @@ const Navbar = () => {
             // Fetch user data to get coins
             axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/users", { username })
             .then(({ data }) => {
-                console.log(data)
+                setCoins(data.user.account_info.coin)
             })
             .catch(err => {
                 console.log(err);
@@ -186,8 +186,6 @@ const Navbar = () => {
                             
                         }
                     </div>
-
-                    
                 </div>
             </div>
 
