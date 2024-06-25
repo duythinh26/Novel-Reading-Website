@@ -5,7 +5,7 @@ import { faUser, faClockRotateLeft, faBookmark, faEnvelope, faRightFromBracket }
 import { UserContext } from "../../App";
 import { removeFormSession } from "./Session";
 
-const UserNavigation = () => {
+const UserNavigation = ({ coins }) => {
     const { userAuth: { username }, userAuth, setUserAuth } = useContext(UserContext)
 
     const signOutUser = () => {
@@ -14,6 +14,8 @@ const UserNavigation = () => {
         // Reset the web auth state
         setUserAuth({ access_token: null })
     }
+
+    console.log(coins)
 
     return (
         <ul className="bg-white absolute w-user m-0 p-0 right-0 top-[46px] z-20">
@@ -42,6 +44,7 @@ const UserNavigation = () => {
                     <i className="fi fi-rr-settings"></i> Hệ thống
                 </Link>
             </li>
+            <p className="font-bold text-base p-3 w-full float-left justify-start border-none">Coins: {coins}</p>
             <div className="relative w-full flex items-center gap-2 py-4 opacity-20 uppercase text-black font-bold">
                 <hr className="w-full border-black"/>
             </div>

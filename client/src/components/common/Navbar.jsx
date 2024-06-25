@@ -9,8 +9,9 @@ import axios from "axios";
 const Navbar = () => {
 
     const [ userNavPanel, setUserNavPanel ] = useState(false);
+    const [ coins, setCoins ] = useState(0);
 
-    const { userAuth, userAuth: { access_token, profile_img, new_notification_available }, setUserAuth } = useContext(UserContext);
+    const { userAuth, userAuth: { username, access_token, profile_img, new_notification_available }, setUserAuth } = useContext(UserContext);
 
     const handleUserNavPanel = () => {
         setUserNavPanel(currentValue => !currentValue)
@@ -34,9 +35,18 @@ const Navbar = () => {
             })
             .catch(err => {
                 console.log(err);
+            });
+
+            // Fetch user data to get coins
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/users", { username })
+            .then(({ data }) => {
+                console.log(data)
             })
+            .catch(err => {
+                console.log(err);
+            });
         }
-    }, [access_token])
+    }, [access_token, username])
     
     // Make sub menu in "Hướng dẫn" part can close when click outside the box
     window.addEventListener('click', function(e) {
@@ -147,7 +157,7 @@ const Navbar = () => {
                                             <img src={profile_img} alt="Ảnh đại diện" className="w-full h-full object-cover rounded-full" />
                                         </button>
                                         {
-                                            userNavPanel ? <UserNavigation /> : ""
+                                            userNavPanel ? <UserNavigation coins={coins}/> : ""
                                         }
                                     </div>
                                 </div>

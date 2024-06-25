@@ -310,9 +310,8 @@ const NovelPage = () => {
                             {
                                 episode.length ? 
                                 episode.map((episode, i) => {
-                                    console.log(episode)
                                     return <section key={i} className='bg-profile rounded border overflow-hidden border-[#e4e5e7_#dadbdd_hsla(214,4%,80%,0.8)] border-solid mb-[20px]'>
-                                        <EpisodeInNovel episode_id={episode} />
+                                        <EpisodeInNovel episode_id={episode} publisherUsername={publisher_username}/>
                                     </section>
                                 }) : <></>
                             }

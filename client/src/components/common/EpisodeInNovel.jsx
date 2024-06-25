@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { episodeStructure } from './episodeStructure'
 import axios from 'axios';
+import PopupConfirm from './PopupConfirm';
+import { UserContext } from '../../App';
 
-const EpisodeInNovel = ({ episode_id }) => {
+const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
+    
+    let { userAuth: { access_token, username } } = useContext(UserContext);
 
     const [ episode, setEpisode ] = useState(episodeStructure);
+    const [ showPopup, setShowPopup ] = useState(false);
+    const [ popupMessage, setPopupMessage ] = useState('');
 
     let {
+        _id,
         activity,
         belonged_to,
         chapter,
@@ -20,11 +27,35 @@ const EpisodeInNovel = ({ episode_id }) => {
     const fetchEpisode = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-episodes", { episode_id })
         .then(({ data }) => {
-            setEpisode(data.episode)
+            setEpisode(data.episode);
         })
         .catch(err => {
             console.log(err);
         })
+    }
+    
+    const handlePurchaseClick = () => {
+        setShowPopup(true);
+    }
+
+    const handleCancelPurchase = () => {
+        setShowPopup(false);
+        setPopupMessage('');
+    }
+
+    const handleConfirmPurchase = () => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/purchase-episode", { _id }, {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(({ data }) => {
+            setPopupMessage(data.message);
+        })
+        .catch(err => {
+            setPopupMessage("Có lỗi xảy ra, vui lòng thử lại sau");
+            console.log(err)
+        });
     }
 
     const resetStates = () => {
@@ -53,11 +84,39 @@ const EpisodeInNovel = ({ episode_id }) => {
                                     <div className="inset-0 absolute cover-background" style={{'backgroundImage': `url(${episode_banner})`}}></div>
                                 </div>
                             </a>
+                            <div className="text-center mt-[10px]">
+                                {
+                                    username !== publisherUsername && (
+                                        price === 0 ? (
+                                            <button className='text-xl text-[#4caf50] bg-transparent cursor-default border-[none]'>
+                                                Miễn phí
+                                            </button>
+                                        ) : (
+                                            <button 
+                                                className='text-xl text-white bg-[#f44336] cursor-pointer px-[20px] py-[10px] rounded-[5px] border-[none]'
+                                                onClick={handlePurchaseClick}
+                                            >
+                                                {price} xu
+                                            </button>
+                                        )
+                                    )
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div className="relative w-full px-[15px] flex-[0_0_100%] max-w-full md:flex-[0_0_83.33333333%] md:max-w-[83.33333333%]"></div>
+                    <div className="relative w-full px-[15px] flex-[0_0_100%] max-w-full md:flex-[0_0_83.33333333%] md:max-w-[83.33333333%]">
+                    </div>
                 </div>
             </main>
+            {
+                showPopup && 
+                <PopupConfirm 
+                    price={price}
+                    onConfirm={handleConfirmPurchase}
+                    onCancel={handleCancelPurchase}
+                    message={popupMessage}
+                />
+            }
         </>
     )
 }
