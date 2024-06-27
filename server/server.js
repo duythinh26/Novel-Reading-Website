@@ -946,6 +946,23 @@ server.post("/purchase-episode", verifyJWT, async (req, res) => {
     }
 })
 
+server.post("/check-owned-episode", verifyJWT, async (req, res) => {
+    const user_id = req.user;
+    const { episode_id } = req.body;
+
+    try {
+        const user = await User.findById(user_id);
+
+        if (user.account_info.ownedEpisode.includes(episode_id)) {
+            return res.json({ owned: true });
+        } else {
+            return res.json({ owned: false });
+        }
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+})
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
