@@ -11,6 +11,7 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
     const [ episode, setEpisode ] = useState(episodeStructure);
     const [ showPopup, setShowPopup ] = useState(false);
     const [ popupMessage, setPopupMessage ] = useState('');
+    const [ owned, setOwned ] = useState(false);
 
     let {
         _id,
@@ -33,6 +34,20 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
             console.log(err);
         })
     }
+
+    const checkOwnedEpisode = () => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/check-owned-episode", { episode_id }, {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(({ data }) => {
+            setOwned(data.owned)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
     
     const handlePurchaseClick = () => {
         setShowPopup(true);
@@ -51,6 +66,7 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
         })
         .then(({ data }) => {
             setPopupMessage(data.message);
+            checkOwnedEpisode();
         })
         .catch(err => {
             setPopupMessage("Có lỗi xảy ra, vui lòng thử lại sau");
@@ -60,12 +76,15 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
 
     const resetStates = () => {
         setEpisode(episodeStructure);
+        setOwned(false);
     }
 
     useEffect(() => {
         resetStates();
 
         fetchEpisode();
+
+        checkOwnedEpisode();
     }, [episode_id])
 
     return (
@@ -92,12 +111,21 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
                                                 Miễn phí
                                             </button>
                                         ) : (
-                                            <button 
-                                                className='text-xl text-white bg-[#f44336] cursor-pointer px-[20px] py-[10px] rounded-[5px] border-[none]'
-                                                onClick={handlePurchaseClick}
-                                            >
-                                                {price} xu
-                                            </button>
+                                            owned ? (
+                                                <button
+                                                    className='text-xl text-white bg-[#bdbdbd] cursor-default px-[20px] py-[10px] rounded-[5px] border-[none]'
+                                                    title='Bạn đã mua tập này'
+                                                >
+                                                    Đã mua
+                                                </button>
+                                            ) : (
+                                                <button 
+                                                    className='text-xl text-white bg-[#f44336] cursor-pointer px-[20px] py-[10px] rounded-[5px] border-[none]'
+                                                    onClick={handlePurchaseClick}
+                                                >
+                                                    {price} xu
+                                                </button>
+                                            )
                                         )
                                     )
                                 }
