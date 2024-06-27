@@ -77,47 +77,35 @@ const verifyJWT = (req, res, next) => {
     });
 }
 
-const deleteComments = (_id) => {
-    Comment.findOne({ _id })
-    .then(comment => {
-        if (comment.parent) { // Checking parent key of the comment
-            Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id }})
-            .then(data => {
-                console.log("Comment delete from parent")
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        }
-
-        Notification.findOneAndDelete({ comment: _id })
-        .then(notification => {
-            console.log("Notification deleted")
-        })
-        .catch(err => {
-            console.log(err)
-        })
-
-        Notification.findOneAndDelete({ reply: _id })
-        .then(notification => {
-            console.log("Reply deleted")
-        })
-        .catch(err => {
-            console.log(err)
-        })
-
-        Novel.findOneAndUpdate({ _id: comment.novel_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1, "activity.total_parent_comments": comment.parent ? 0 : -1 } })
-        .then(novel => {
-            if (comment.children.length) {
-                comment.children.map(replies => {
-                    deleteComments(replies);
-                })
+const deleteComments = async (_id) => {
+    try {
+        const comment = await Comment.findOne({ _id });
+        if (comment) {
+            if (comment.parent) { // Checking parent key of the comment
+                await Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } });
+                console.log("Comment deleted from parent");
             }
-        })
-    })
-    .catch(err => {
+
+            await Notification.findOneAndDelete({ comment: _id });
+            console.log("Notification deleted");
+
+            await Notification.findOneAndDelete({ reply: _id });
+            console.log("Reply notification deleted");
+
+            await Novel.findOneAndUpdate({ _id: comment.novel_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1, "activity.total_parent_comments": comment.parent ? 0 : -1 } });
+
+            if (comment.children.length) {
+                for (let replyId of comment.children) {
+                    await deleteComments(replyId);
+                }
+            }
+
+            await Comment.findOneAndDelete({ _id });
+            console.log("Comment deleted from database");
+        }
+    } catch (err) {
         console.log(err.message)
-    })
+    }
 }
 
 // Upload images url route
@@ -672,21 +660,27 @@ server.post("/get-replies", (req, res) => {
 
 })
 
-server.post("/delete-comment", verifyJWT, (req, res) => {
+server.post("/delete-comment", verifyJWT, async (req, res) => {
     let user_id = req.user;
 
     let { _id } = req.body;
 
-    Comment.findOne({ _id })
-    .then(comment => {
-        if (user_id == comment.commented_by || user_id == comment.novel_publisher) {
-            deleteComments(_id)
-
-            return res.status(200).json({ status: "Done" });
+    try {
+        const comment = await Comment.findOne({ _id })
+        if (comment) {
+            if (user_id == comment.commented_by || user_id == comment.novel_publisher) {
+                await deleteComments(_id);
+                return res.status(200).json({ status: "Done" });
+            } else {
+                return res.status(403).json({ error: "You cannot delete this comment" });
+            }
         } else {
-            return res.status(403).json({ error: "You cannot delete this comment" });
+            return res.status(404).json({ error: "Comment not found" });
         }
-    })
+    } catch (err) {
+        console.log(err.message);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 })
 
 server.get("/new-notification", verifyJWT, (req, res) => {

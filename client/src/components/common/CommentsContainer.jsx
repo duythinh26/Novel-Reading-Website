@@ -42,6 +42,8 @@ const CommentsContainer = () => {
         setNovel({ ...novel, comments: newCommentsArr })
     }
 
+    console.log(total_comments)
+
     return (
         <>
             <section id="series-comments" className="block mb-[20px] basic-section">

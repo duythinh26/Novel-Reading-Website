@@ -15,8 +15,6 @@ const UserNavigation = ({ coins }) => {
         setUserAuth({ access_token: null })
     }
 
-    console.log(coins)
-
     return (
         <ul className="bg-white absolute w-user m-0 p-0 right-0 top-[46px] z-20">
             <li>

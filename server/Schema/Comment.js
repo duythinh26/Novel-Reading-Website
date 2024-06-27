@@ -10,7 +10,7 @@ const commentSchema = mongoose.Schema({
     novel_publisher: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'novels',
+        ref: 'users',
     },
     comment: {
         type: String,
