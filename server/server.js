@@ -963,6 +963,59 @@ server.post("/check-owned-episode", verifyJWT, async (req, res) => {
     }
 })
 
+server.post("/get-episodes-in-novel", verifyJWT, async (req, res) => {
+    const { novel_id } = req.body;
+
+    try {
+        const novel = await Novel.findOne({ novel_id }).populate('episode');
+        
+        if (!novel) {
+            return res.status(404).json({ error: 'Novel not found' });
+        }
+
+        return res.status(200).json({ episodes: novel.episode });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+});
+
+server.post("/delete-episode", verifyJWT, async (req, res) => {
+    let user_id = req.user;
+    let { episode_id } = req.body;
+
+    Episode.findOneAndDelete({ episode_id })
+    .then(episode => {
+        Notification.deleteMany({ episode: episode._id })
+        .then(() => {
+            console.log("Đã xóa tất cả thông báo liên quan đến episode");
+        })
+        .catch(err => {
+            console.log("Có lỗi khi xóa thông báo liên quan đến episode", err);
+        });
+
+        Comment.deleteMany({ episode: episode._id })
+        .then(() => {
+            console.log("Đã xóa tất cả bình luận liên quan đến episode");
+        })
+        .catch(err => {
+            console.log("Có lỗi khi xóa bình luận liên quan đến episode", err);
+        });
+
+        Novel.findOneAndUpdate({ _id: episode.belonged_to }, { $pull: { episode: episode._id } })
+        .then(() => {
+            console.log("Đã cập nhật novel liên quan");
+        })
+        .catch(err => {
+            console.log("Có lỗi khi cập nhật novel liên quan", err);
+        });
+
+        return res.status(200).json({ status: "Đã hoàn thành" });
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message });
+    });
+})
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
