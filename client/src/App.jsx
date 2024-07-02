@@ -75,7 +75,7 @@ const App = () => {
           <Route path='email' element={ <h1>Email page</h1> }/>
           <Route path='username' element={ <h1>Username page</h1> }/>
           <Route path='series/:novel_id' element={ <ManageNovel /> }/>
-          <Route path='series/:novel_id/chapter' element={ <EpisodeEditor /> }/>
+          <Route path='series/:novel_id/episode' element={ <EpisodeEditor /> }/>
         </Route>
         {/* leave this tag at the end of the route / since the path of this route is all path */}
         <Route path='*' element={ <PageNotFound />}/>

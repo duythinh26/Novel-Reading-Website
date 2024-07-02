@@ -107,7 +107,7 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
                                 {
                                     username !== publisherUsername && (
                                         price === 0 ? (
-                                            <button className='text-xl text-[#4caf50] bg-transparent cursor-default border-[none]'>
+                                            <button className='text-xl text-[#4caf50] bg-transparent cursor-default border-[none]' title='Miễn phí'>
                                                 Miễn phí
                                             </button>
                                         ) : (

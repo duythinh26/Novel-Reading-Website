@@ -127,9 +127,9 @@ const NovelPublishedList = () => {
                                             </tr>
                                             {
                                                 novels.results.map((novel, i) => {
-                                                    return <tr key={i}>
+                                                    return <React.Fragment key={i}>
                                                         <NovelPublishedCard novel={{ ...novel, index: i, setStateFunc: setNovels }} />
-                                                    </tr>
+                                                    </React.Fragment>
                                                 })
                                             }
                                         </tbody>

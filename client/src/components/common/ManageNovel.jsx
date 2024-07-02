@@ -186,8 +186,8 @@ const ManageNovel = () => {
                                 {
                                     novelSubMenu ?
                                     <div class="right-4 top-11 absolute bg-white border border-[#dddddd] rounded shadow-md">
-                                        <a href={`/action/series/${novel_id}/chapter`} class="block px-4 py-2 hover:bg-gray-100">Thêm chương</a>
-                                        <a href='#'class="block px-4 py-2 hover:bg-gray-100">Sửa chương</a>
+                                        <a href={`/action/series/${novel_id}/episode`} class="block px-4 py-2 hover:bg-gray-100">Thêm tập</a>
+                                        <a href='#'class="block px-4 py-2 hover:bg-gray-100">Sửa tập</a>
                                     </div> : ""
                                 }
                             </div>

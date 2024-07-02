@@ -120,8 +120,6 @@ const EpisodeEditor = () => {
         fetchNovel();
     }, [])
 
-    console.log(access_token)
-
     return (
         <>
             <Toaster />
@@ -149,7 +147,7 @@ const EpisodeEditor = () => {
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
-                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tiêu đề chương</label>
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tiêu đề tập</label>
                                         <div className="float-left lg:w-2/3 px-4">
                                             <input 
                                                 type="text"
