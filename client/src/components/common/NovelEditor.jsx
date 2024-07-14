@@ -17,6 +17,7 @@ const NovelEditor = () => {
     let { userAuth: { access_token } } = useContext(UserContext);
 
     let navigate = useNavigate();
+    let navigateBack = useNavigate();
 
     let { 
         novel_title, 
@@ -180,6 +181,10 @@ const NovelEditor = () => {
             return toast.error(response.data.error);
         })
     }
+
+    const handleGoBack = () => {
+        navigateBack(-1); // Điều hướng quay lại trang trước đó
+    };
 
     // const handleSaveDraft = (e) => {
 
@@ -457,7 +462,7 @@ const NovelEditor = () => {
                                             >
                                                 Lưu nháp
                                             </button>
-                                            <a href="javascript: history.back()" className='btn btn-warning text-base text-white ml-4'>Quay lại</a>
+                                            <button type='button' onClick={handleGoBack} className='btn btn-warning text-base text-white ml-4'>Quay lại</button>
                                         </div>
                                     </div>
                                 </form>

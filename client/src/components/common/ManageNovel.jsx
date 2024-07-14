@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { novelStructure } from './novelStructure';
 import axios from 'axios';
 import { UserContext } from '../../App';
-import { toast } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import { uploadImage } from './aws';
 
 const ManageNovel = () => {
@@ -172,8 +172,11 @@ const ManageNovel = () => {
         setNovelSubMenu(currentValue => !currentValue)
     }
 
+    console.log(novel_id)
+
     return (
         <>
+            <Toaster />
             <div className="container mx-auto px-[15px]"> 
                 <div className="row">
                     <div className="lg:ml-[8.33333333%] lg:w-5/6 lg:float-left relative min-h-[1px] px-[15px]">
@@ -186,8 +189,8 @@ const ManageNovel = () => {
                                 {
                                     novelSubMenu ?
                                     <div class="right-4 top-11 absolute bg-white border border-[#dddddd] rounded shadow-md">
+                                        <a href={`/action/series/${novel_id}/episode-list`}class="block px-4 py-2 hover:bg-gray-100">Danh sách tập</a>
                                         <a href={`/action/series/${novel_id}/episode`} class="block px-4 py-2 hover:bg-gray-100">Thêm tập</a>
-                                        <a href='#'class="block px-4 py-2 hover:bg-gray-100">Sửa tập</a>
                                     </div> : ""
                                 }
                             </div>

@@ -18,6 +18,8 @@ import ManageNovel from './components/common/ManageNovel';
 import NovelPublishedList from './components/common/NovelPublishedList';
 import NovelDetail from './components/common/NovelDetail';
 import EpisodeEditor from './components/common/EpisodeEditor';
+import EpisodeList from './components/common/EpisodeList';
+import ManageEpisode from './components/common/ManageEpisode';
 
 export const UserContext = createContext({})
 
@@ -76,9 +78,11 @@ const App = () => {
           <Route path='username' element={ <h1>Username page</h1> }/>
           <Route path='series/:novel_id' element={ <ManageNovel /> }/>
           <Route path='series/:novel_id/episode' element={ <EpisodeEditor /> }/>
+          <Route path='series/:novel_id/episode-list' element={ <EpisodeList />  }/>
+          <Route path='episode/:episode_id' element={ <ManageEpisode /> }/>
         </Route>
         {/* leave this tag at the end of the route / since the path of this route is all path */}
-        <Route path='*' element={ <PageNotFound />}/>
+        <Route path='*' element={ <PageNotFound />}/> 
       </Routes>
     </UserContext.Provider>
   )

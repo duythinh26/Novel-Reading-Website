@@ -93,7 +93,7 @@ const NovelPublishedList = () => {
                                         <form method="post">
                                             <input type="hidden" name='_token' value={access_token}/>
                                             <div className="relative table border-separate md:inline-table md:align-middle">
-                                                <input 
+                                                <input
                                                     type="search" 
                                                     className='form-input relative z-[2] float-left mb-0 table-cell md:inline-block md:w-auto md:align-middle' 
                                                     style={{"width": "250px"}}

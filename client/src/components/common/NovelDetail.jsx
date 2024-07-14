@@ -127,7 +127,7 @@ const NovelDetail = () => {
                                                 className='border border-solid rounded-md border-silver z-20'
                                                 // onChange={handleCategoriesChange}
                                             />
-                                        </div> 
+                                        </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
                                         <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tóm tắt</label>
