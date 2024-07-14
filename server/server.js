@@ -792,6 +792,13 @@ server.put("/update-novel", verifyJWT, async (req, res) => {
             return res.status(400).send({ message: "Send all required fields" })
         }
 
+        // Check existing novel
+        const existingNovel = await Novel.findOne({ novel_id });
+
+        if (!existingNovel) {
+            return res.status(404).send({ message: "Không tìm thấy novel" });
+        }
+
         await Novel.findOneAndUpdate({ novel_id }, { "novel_title": novel_title, "novel_banner": novel_banner, "other_name": other_name, "sensitive_content": sensitive_content, "novel_banner": novel_banner, "author": author, "artist": artist, "type_of_novel": type_of_novel, "categories": categories, "description": description, "note": note, "status": status })
         .then((novel) => {
             return res.status(200).json({ message: "Đã cập nhật truyện" })
@@ -836,7 +843,7 @@ server.post('/create-episode', verifyJWT, async (req, res) => {
         }
 
         let episode_id = nanoid();
-
+ 
         let episode = new Episode({
             episode_id,
             episode_title,
@@ -1014,6 +1021,42 @@ server.post("/delete-episode", verifyJWT, async (req, res) => {
     .catch(err => {
         return res.status(500).json({ error: err.message });
     });
+})
+
+server.put("/update-episode", verifyJWT, async (req, res) => {
+    let { _id, episode_title, episode_banner, description, price } = req.body;
+
+    try {
+        if (!req.body) {
+            return res.status(400).send({ message: "Send all required fields" });
+        }
+
+        // Check existing episode
+        const existingEpisode = await Episode.findById({ _id });
+
+        if (!existingEpisode) {
+            return res.status(404).send({ message: "Không tìm thấy episode" });
+        }
+
+        await Episode.findByIdAndUpdate(
+            _id,
+            {
+                "episode_title": episode_title,
+                "episode_banner": episode_banner,
+                "description": description,
+                "price": price
+            }, { new: true }
+        )
+        .then((episode) => {
+            return res.status(200).json({ message: "Đã cập nhật tập truyện" });
+        })
+        .catch(err => {
+            return res.status(404).json({ message: err.message });
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
 })
 
 server.listen(PORT, () => {
