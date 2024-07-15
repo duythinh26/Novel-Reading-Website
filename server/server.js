@@ -871,6 +871,7 @@ server.post("/get-episodes", (req, res) => {
 
     Episode.findByIdAndUpdate(episode_id, { $inc: { "activity.total_reads": 1 }})
     .populate("publisher", "personal_info.username personal_info.profile_img")
+    .populate("belonged_to")
     .then(episode => {
         if (!episode) {
             return res.status(404).json({ error: 'Episode not found' });
@@ -890,6 +891,24 @@ server.post("/get-episodes", (req, res) => {
         return res.status(500).json({ error: err.message });
     });
 })
+
+server.post("/get-episode-by-publisher", verifyJWT, async (req, res) => {
+    let { episode_id } = req.body;
+
+    try {
+        // Using populate to get data of novel from episode
+        const episode = await Episode.findById(episode_id).populate('belonged_to');
+
+        if (!episode) {
+            return res.status(404).send({ message: "Episode not found" });
+        }
+
+        res.status(200).send({ episode });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+});
 
 server.post("/buy-coins", async (req, res) => {
     let {

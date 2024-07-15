@@ -119,7 +119,19 @@ const ManageEpisode = () => {
                             <div className="p-[15px]">
                                 <form>
                                     <div className="mb-[15px] clearfix">
-                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tiêu đề</label>
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left'>Tiêu đề truyện</label>
+                                        <div className="float-left lg:w-2/3 px-4">
+                                            <input 
+                                                type="text"
+                                                name="title"
+                                                className="input input-info w-full h-input border border-solid border-silver"
+                                                value={episode.belonged_to?.novel_title}
+                                                disabled={true}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="mb-[15px] clearfix">
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tiêu đề tập</label>
                                         <div className="float-left lg:w-2/3 px-4">
                                             <input 
                                                 type="text"

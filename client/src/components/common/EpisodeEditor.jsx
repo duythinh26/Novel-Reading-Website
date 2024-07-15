@@ -128,7 +128,7 @@ const EpisodeEditor = () => {
                     <div className="lg:ml-[8.33333333%] lg:w-5/6 lg:float-left relative min-h-[1px] px-[15px]">
                         <div className="border-[#dddddd] bg-white border rounded shadow-[0_1px_1px_rgba(0,0,0,0.05)] mb-5 border-solid">
                             <div className="flex items-center justify-between text-[#333333] bg-neutral-100 px-[15px] py-[10px] rounded-t-[3px] border-b-transparent border-[#dddddd] border-b border-solid">
-                                <span>Book</span>
+                                <span>Episode</span>
                             </div>
                             <div className="p-[15px]">
                                 <form>
