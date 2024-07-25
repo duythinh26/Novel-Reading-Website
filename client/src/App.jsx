@@ -20,6 +20,7 @@ import NovelDetail from './components/common/NovelDetail';
 import EpisodeEditor from './components/common/EpisodeEditor';
 import EpisodeList from './components/common/EpisodeList';
 import ManageEpisode from './components/common/ManageEpisode';
+import ChapterEditor from './components/common/ChapterEditor';
 
 export const UserContext = createContext({})
 
@@ -74,12 +75,13 @@ const App = () => {
           <Route path='series' element={ <Editor /> }/>
           <Route path='profile' element={ <EditProfile /> }/>
           <Route path='password' element={ <ChangePassword/> }/>
-          <Route path='email' element={ <h1>Email page</h1> }/>
+          <Route path='email' elem ent={ <h1>Email page</h1> }/>
           <Route path='username' element={ <h1>Username page</h1> }/>
           <Route path='series/:novel_id' element={ <ManageNovel /> }/>
           <Route path='series/:novel_id/episode' element={ <EpisodeEditor /> }/>
-          <Route path='series/:novel_id/episode-list' element={ <EpisodeList />  }/>
-          <Route path='episode/:episode_id' element={ <ManageEpisode /> }/>
+          <Route path='series/:novel_id/episode-list' element={ <EpisodeList /> }/>
+          <Route path='series/episode/:episode_id' element={ <ManageEpisode /> }/>
+          <Route path='series/manage/:episode_id/createchapter' element={ <ChapterEditor /> }/>
         </Route>
         {/* leave this tag at the end of the route / since the path of this route is all path */}
         <Route path='*' element={ <PageNotFound />}/> 

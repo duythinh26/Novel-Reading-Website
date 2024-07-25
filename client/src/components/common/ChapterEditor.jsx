@@ -1,148 +1,123 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
-import { episodeStructure } from './episodeStructure';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { UserContext } from '../../App';
-import { Toaster, toast } from 'react-hot-toast';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { uploadImage } from './aws';
 import { Editor } from '@tinymce/tinymce-react';
+import { Toaster, toast } from 'react-hot-toast';
+import { episodeStructure } from './episodeStructure';
+import { chapterStructure } from './chapterStructure'
 
-const ManageEpisode = () => {
+const ChapterEditor = () => {
 
     let { episode_id } = useParams();
-
-    let [ episode, setEpisode ] = useState(episodeStructure);
-    const [ episodeSubMenu, setEpisodeSubMenu ] = useState(false);
-
+    const chapterBannerRef = useRef();
     let { userAuth: { access_token } } = useContext(UserContext);
 
-    var episodeCoverRef = useRef();
-    let navigate = useNavigate();
-
-    const fetchEpisode = () => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-episodes", { episode_id })
-        .then(({ data: { episode } }) => {
-            setEpisode(episode);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    };
-
-    useEffect(() => {
-        resetStates();
-
-        fetchEpisode();
-    }, []);
-
-    const resetStates = () => {
-        setEpisode(episodeStructure);
-    }
+    let [ episode, setEpisode ] = useState(episodeStructure);
+    let [ chapter, setChapter ] = useState(chapterStructure);
+    
+    const navigate = useNavigate();
 
     const handleTitleChange = (e) => {
-        setEpisode({ ...episode, episode_title: e.target.value });
+        setChapter({ ...chapter, chapter_title: e.target.value });
     }
 
-    const handlePriceChange = (e) => {
-        setEpisode({ ...episode, price: e.target.value });
-    }
-
-    const handleDescriptionChange = (value, editor) => {
-        setEpisode({ ...episode, description: editor.getContent() });
-    }
-
-    const handleBannerUpload = async (e) => {
+    const handleBannerUpload = (e) => {
         let img = e.target.files[0];
 
         if (img) {
-            let loadingToast = toast.loading("Bạn chờ tí nhé ...");
+            let loadingToast = toast.loading("Bạn chờ tí nhé ...")
 
-            await uploadImage(img).then((url) => {
+            uploadImage(img).then((url) => {
                 if (url) {
                     toast.dismiss(loadingToast);
                     toast.success("Đã đăng ảnh thành công!");
 
-                    episodeCoverRef.current.className = "block max-w-[100px] max-h-[100px] w-auto h-auto z-20";
+                    chapterBannerRef.current.className = "block max-w-[100px] max-h-[100px] w-auto h-auto z-20";
 
-                    setEpisode({ ...episode, episode_banner: url });
+                    setChapter({ ...chapter, chapter_banner: url });
                 }
             })
             .catch(err => {
                 toast.dismiss(loadingToast);
-                toast.error(err.message || 'Có lỗi xảy ra khi đăng ảnh');
-            });
+                return toast.error(err);
+            })
         }
     }
 
-    const handleSaveEvent = async (e) => {
-        let episodeObject = {
-            _id: episode._id,
-            episode_title: episode.episode_title,
-            episode_banner: episode.episode_banner,
-            description: episode.description,
-            price: episode.price
+    const handleContentChange = (value, editor) => {
+        setChapter({ ...chapter, content: editor.getContent() });
+    }
+
+    const handleStatusChange = (e) => {
+        setChapter({ ...chapter, chapter_status: e.target.value });
+    }
+
+    const handlePublishEvent = (e) => {
+        if (e.target.className.includes("btn-disabled")) {
+            return;
+        }
+
+        if (!chapter.chapter_title.length) {
+            return toast.error("Chapter đang thiếu tiêu đề");
+        }
+
+        if (!chapter.content.length) {
+            return toast.error("Chapter đang thiếu nội dung");
+        }
+
+        let loadingToast = toast.loading("Bạn đợi chút nhé ...");
+
+        e.target.classList.add("btn-disabled");
+
+        const chapterObject = {
+            ...chapter,
+            episode_id: episode_id,
         };
 
-        axios.put(import.meta.env.VITE_SERVER_DOMAIN + "/update-episode", episodeObject, {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-chapter", chapterObject, {
             headers: {
                 'Authorization': `Bearer ${access_token}`
             }
         })
         .then(() => {
+            e.target.classList.remove("btn-disabled");
+
+            toast.dismiss(loadingToast);
+            toast.success("Đã tạo chapter thành công");
+
             setTimeout(() => {
                 navigate(`/action`);
             }, 500);
         })
         .catch(({ response }) => {
+            e.target.classList.remove("btn-disabled");
+            toast.dismiss(loadingToast);
+            
             return toast.error(response.data.error);
         });
-    };
-
-    const handleEpisodeSubMenu = () => {
-        setEpisodeSubMenu(currentValue => !currentValue)
     }
 
     return (
         <>
             <Toaster />
-            <div className="container mx-auto px-[15px]"> 
+            <div className="container mx-auto px-[15px]">
                 <div className="row">
                     <div className="lg:ml-[8.33333333%] lg:w-5/6 lg:float-left relative min-h-[1px] px-[15px]">
                         <div className="border-[#dddddd] bg-white border rounded shadow-[0_1px_1px_rgba(0,0,0,0.05)] mb-5 border-solid">
                             <div className="flex items-center justify-between text-[#333333] bg-neutral-100 px-[15px] py-[10px] rounded-t-[3px] border-b-transparent border-[#dddddd] border-b border-solid">
-                                <span>Episode</span>
-                                <button onClick={handleEpisodeSubMenu} className="bg-blue-500 cursor-pointer border-[none] bg-blue-500 rounded">
-                                    <i className="fi fi-rr-menu-burger"></i>
-                                </button>
-                                {
-                                    episodeSubMenu ?
-                                    <div className="right-4 top-11 absolute bg-white border border-[#dddddd] rounded shadow-md">
-                                        <a href={`/action/series/episode-list`} className="block px-4 py-2 hover:bg-gray-100">Danh sách chương</a>
-                                        <a href={`/action/series/manage/${episode_id}/createchapter`} className="block px-4 py-2 hover:bg-gray-100">Thêm chương</a>
-                                    </div> : ""
-                                }
+                                <span>Chapter</span>
                             </div>
                             <div className="p-[15px]">
                                 <form>
                                     <div className="mb-[15px] clearfix">
-                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left'>Tiêu đề truyện</label>
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tiêu đề chapter</label>
                                         <div className="float-left lg:w-2/3 px-4">
                                             <input 
                                                 type="text"
-                                                name="title"
+                                                name="chapter_title"
                                                 className="input input-info w-full h-input border border-solid border-silver"
-                                                value={episode.belonged_to?.novel_title}
-                                                disabled={true}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="mb-[15px] clearfix">
-                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tiêu đề tập</label>
-                                        <div className="float-left lg:w-2/3 px-4">
-                                            <input 
-                                                type="text"
-                                                name="title"
-                                                className="input input-info w-full h-input border border-solid border-silver"
-                                                value={episode.episode_title}
                                                 onChange={handleTitleChange}
                                             />
                                         </div>
@@ -165,14 +140,14 @@ const ManageEpisode = () => {
                                                 </div>
                                             </div>
                                             <img 
-                                                ref={episodeCoverRef} 
-                                                src={episode.episode_banner} 
-                                                className='block max-w-[100px] max-h-[100px] w-auto h-auto z-20' 
+                                                ref={chapterBannerRef} 
+                                                src={chapter.chapter_banner} 
+                                                className='hidden' 
                                             />
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
-                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Tóm tắt</label>
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Nội dung</label>
                                         <div id='textEditor' className="float-left lg:w-5/6 px-4">
                                             <Editor
                                                 apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
@@ -189,55 +164,53 @@ const ManageEpisode = () => {
                                                     branding: false,
                                                     selector: "textarea",
                                                     entity_encoding: "raw",
-                                                    relative_urls : false,
-                                                    convert_urls : false,
-                                                    setup: function (editor) {
-                                                        editor.getContent();
-                                                    }
+                                                    relative_urls: false,
+                                                    convert_urls: false,
                                                 }}
-                                                value={episode.description}
-                                                onEditorChange={handleDescriptionChange}
+                                                onEditorChange={handleContentChange}
                                             />
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
-                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left'>Giá</label>
+                                        <label className='relative px-4 pt-2 text-right lg:w-1/6 lg:float-left after:content-["_*_"] after:text-red'>Trạng thái</label>
                                         <div className="float-left lg:w-2/3 px-4">
-                                            <input 
-                                                type="number"
-                                                name="price"
+                                            <select 
+                                                name="chapter_status"
                                                 className="input input-info w-full h-input border border-solid border-silver"
-                                                value={episode.price}
-                                                onChange={handlePriceChange}
-                                            />
+                                                onChange={handleStatusChange}
+                                            >
+                                                <option value="Đang tiến hành">Đang tiến hành</option>
+                                                <option value="Tạm ngưng">Tạm ngưng</option>
+                                                <option value="Đã hoàn thành">Đã hoàn thành</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="mb-[15px] clearfix">
                                         <div className="float-left lg:ml-1/6 lg:w-5/6 px-4">
                                             <button 
-                                                type='button' 
+                                                type='button'
                                                 className='btn btn-confirm text-white text-base'
-                                                onClick={handleSaveEvent}
+                                                onClick={handlePublishEvent}
                                             >
-                                                Cập nhật
+                                                Thêm chapter
                                             </button>
                                             <button 
                                                 type='button'
-                                                className='btn btn-accent text-base ml-4'
-                                                onClick={() => navigate(`/action/series/${novel_id}/episode-list`)}
+                                                className='btn btn-accent text-white text-base ml-4'
                                             >
-                                                Huỷ bỏ
+                                                Lưu nháp
                                             </button>
+                                            <a href="javascript: history.back()" className='btn btn-warning text-base text-white ml-4'>Quay lại</a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
             </div>
         </>
-    )
+    );
 }
 
-export default ManageEpisode
+export default ChapterEditor;

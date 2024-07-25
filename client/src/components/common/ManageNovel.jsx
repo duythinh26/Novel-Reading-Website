@@ -172,8 +172,6 @@ const ManageNovel = () => {
         setNovelSubMenu(currentValue => !currentValue)
     }
 
-    console.log(novel_id)
-
     return (
         <>
             <Toaster />

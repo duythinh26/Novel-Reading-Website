@@ -148,7 +148,7 @@ const NovelPublishedCard = ({ novel }) => {
                                             </td>
                                             <td className='leading-[1.42857143] p-[8px] border-t-[#dddddd] border-t border-solid !align-middle text-center'>
                                                 <a 
-                                                    href={`/action/episode/${episode._id}`}
+                                                    href={`/action/series/episode/${episode._id}`}
                                                     className='btn mr-8 max-sm:mr-2 text-white bg-[#5bc0de] border-[#46b8da] hover:bg-[#31b0d5] hover:border-[#269abc]'
                                                 >
                                                     <i className="fi fi-rr-pen-square text-2xl"></i>

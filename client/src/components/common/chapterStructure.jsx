@@ -1,4 +1,4 @@
-export const episodeStructure = {
+export const chapterStructure = {
     activity: {
         total_likes: '',
         total_comments: '',
@@ -6,15 +6,13 @@ export const episodeStructure = {
         total_parent_comments: '',
     },
     belonged_to: '',
-    chapter: [],
+    chapter_id: '',
+    chapter_title: '',
+    chapter_status: '',
+    chapter_banner: '',
     comments: [],
-    description: '',
-    episode_id: '',
-    episode_banner: '',
-    episode_title: '',
-    price: 0,
+    content: '',
     publisher: {
         personal_info: { }
     },
-    updatedAt: ''
 }
