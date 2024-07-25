@@ -12,6 +12,7 @@ import Novel from "./Schema/Novel.js";
 import Notification from "./Schema/Notification.js"
 import Comment from "./Schema/Comment.js";
 import Episode from "./Schema/Episode.js";
+import Chapter from "./Schema/Chapter.js"
 
 const server = express();
 let PORT = 3000;
@@ -64,7 +65,7 @@ const verifyJWT = (req, res, next) => {
 
     const token = authHeaders && authHeaders.split(" ")[1];
     if (token == null) {
-        return res.status(401).json({ error: "No access token"});
+        return res.status(401).json({ error: "No access token" });
     }
 
     jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user) =>{
@@ -1075,6 +1076,53 @@ server.put("/update-episode", verifyJWT, async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: error.message });
+    }
+})
+
+server.post("/create-chapter", verifyJWT, async (req, res) => {
+    let publisherId = req.user;
+
+    let {
+        chapter_title,
+        chapter_banner,
+        content,
+        episode_id
+    } = req.body;
+
+    if (!chapter_title.length) {
+        return res.status(403).json({ error: "Chapter chưa có tiêu đề" });
+    }
+
+    if (!content.length) {
+        return res.status(403).json({ error: "Chapter chưa có nội dung" });
+    }
+
+    try {
+        let episode = await Episode.findOne({ _id: episode_id });
+
+        if (!episode) {
+            return res.status(404).json({ error: "Episode không tồn tại" });
+        }
+
+        let chapter_id = nanoid();
+
+        let chapter = new Chapter({
+            chapter_id,
+            chapter_title,
+            chapter_banner,
+            content,
+            publisher: publisherId,
+            belonged_to: episode._id,
+        });
+
+        await chapter.save();
+
+        episode.chapter.push(chapter._id);
+        await episode.save();
+
+        return res.status(200).json({ id: chapter.chapter_id });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
     }
 })
 
