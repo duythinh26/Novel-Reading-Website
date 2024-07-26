@@ -1126,6 +1126,32 @@ server.post("/create-chapter", verifyJWT, async (req, res) => {
     }
 })
 
+server.post("/get-chapter", async (req, res) => {
+    const { chapter_id } = req.body;
+
+    try {
+        const chapter = await Chapter.findById(chapter_id)
+            .populate("publisher", "personal_info.username personal_info.profile_img")
+            .populate("comments");
+
+        if (!chapter) {
+            return res.status(404).json({ error: 'Chapter not found' });
+        }
+
+        // Tăng số lượt đọc cho chapter và cập nhật thông tin user
+        await Chapter.findByIdAndUpdate(chapter_id, { $inc: { "activity.total_reads": 1 } });
+
+        await User.findOneAndUpdate({ _id: chapter.publisher }, 
+        {
+            $inc: { "account_info.total_reads": 1 }
+        });
+
+        return res.status(200).json({ chapter });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+});
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
