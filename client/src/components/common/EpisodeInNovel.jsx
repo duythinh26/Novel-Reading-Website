@@ -3,6 +3,7 @@ import { episodeStructure } from './episodeStructure'
 import axios from 'axios';
 import PopupConfirm from './PopupConfirm';
 import { UserContext } from '../../App';
+import ChapterList from './ChapterList';
 
 const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
     
@@ -133,6 +134,13 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
                         </div>
                     </div>
                     <div className="relative w-full px-[15px] flex-[0_0_100%] max-w-full md:flex-[0_0_83.33333333%] md:max-w-[83.33333333%]">
+                        <ul className='m-0 p-0 no-underline list-style-none'>
+                            {chapter.map((chapterId) => (
+                                <li key={chapterId} className="relative px-[10px] py-[5px] hover:bg-[#f0f0f0]">
+                                    <ChapterList chapter_id={chapterId} />
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             </main>
