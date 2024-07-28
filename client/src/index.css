@@ -422,6 +422,11 @@
     .desc p {
         @apply mb-[0.5em];
     }
+
+    .chapter-content p {
+        @apply text-[18px];
+        margin: 0 0 20px;
+    }
 }
 
 @layer utilities {

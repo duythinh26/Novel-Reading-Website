@@ -50,6 +50,7 @@ export default {
                 opensans: ["Open Sans"],
                 rotobo: ["Roboto"],
                 gelasio: ["'Gelasio'", "serif"],
+                times: ["Times New Roman, Georgia, serif"]
             },
             width: {
                 'logo': '60px',

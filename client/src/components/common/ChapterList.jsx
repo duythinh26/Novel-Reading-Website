@@ -9,7 +9,7 @@ const ChapterList = ({ chapter_id }) => {
 
     const fetchChapter = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-chapter", { chapter_id })
-        .then(({ data }) => {
+        .then(({ data }) => {   
             setChapter(data.chapter)
         })
         .catch(err => {
@@ -21,7 +21,6 @@ const ChapterList = ({ chapter_id }) => {
         fetchChapter();
     }, [])
 
-    console.log(chapter)
     return (
         <>
             <div className="pr-[86px] overflow-hidden text-ellipsis whitespace-nowrap">

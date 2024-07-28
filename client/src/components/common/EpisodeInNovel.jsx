@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { episodeStructure } from './episodeStructure'
+import React, { useContext, useEffect, useState } from 'react';
+import { episodeStructure } from './episodeStructure';
 import axios from 'axios';
 import PopupConfirm from './PopupConfirm';
 import { UserContext } from '../../App';
@@ -43,10 +43,10 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
             }
         })
         .then(({ data }) => {
-            setOwned(data.owned)
+            setOwned(data.owned);
         })
         .catch((err) => {
-            console.log(err)
+            console.log(err);
         })
     }
     
@@ -71,7 +71,7 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
         })
         .catch(err => {
             setPopupMessage("Có lỗi xảy ra, vui lòng thử lại sau");
-            console.log(err)
+            console.log(err);
         });
     }
 
@@ -82,11 +82,11 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
 
     useEffect(() => {
         resetStates();
-
         fetchEpisode();
-
         checkOwnedEpisode();
-    }, [episode_id])
+    }, [episode_id]);
+
+    const canAccessChapters = owned || username === publisherUsername;
 
     return (
         <>
@@ -134,13 +134,19 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
                         </div>
                     </div>
                     <div className="relative w-full px-[15px] flex-[0_0_100%] max-w-full md:flex-[0_0_83.33333333%] md:max-w-[83.33333333%]">
-                        <ul className='m-0 p-0 no-underline list-style-none'>
-                            {chapter.map((chapterId) => (
-                                <li key={chapterId} className="relative px-[10px] py-[5px] hover:bg-[#f0f0f0]">
-                                    <ChapterList chapter_id={chapterId} />
-                                </li>
-                            ))}
-                        </ul>
+                        {canAccessChapters ? (
+                            <ul className='m-0 p-0 no-underline list-style-none'>
+                                {chapter.map((chapterId) => (
+                                    <li key={chapterId} className="relative px-[10px] py-[5px] hover:bg-[#f0f0f0]">
+                                        <ChapterList chapter_id={chapterId} />
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <div className="text-center mt-[10px] text-red-500">
+                                Bạn cần mua tập này để truy cập vào các chương.
+                            </div>
+                        )}
                     </div>
                 </div>
             </main>
@@ -157,4 +163,4 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
     )
 }
 
-export default EpisodeInNovel
+export default EpisodeInNovel;
