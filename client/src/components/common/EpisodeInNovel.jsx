@@ -13,6 +13,7 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
     const [ showPopup, setShowPopup ] = useState(false);
     const [ popupMessage, setPopupMessage ] = useState('');
     const [ owned, setOwned ] = useState(false);
+    const [userData, setUserData] = useState(null);
 
     let {
         _id,
@@ -49,6 +50,20 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
             console.log(err);
         })
     }
+
+    const fetchUserData = () => {
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/get-user-data", {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(({ data }) => {
+            setUserData(data.user);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+      };
     
     const handlePurchaseClick = () => {
         setShowPopup(true);
@@ -68,12 +83,17 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
         .then(({ data }) => {
             setPopupMessage(data.message);
             checkOwnedEpisode();
+            fetchUserData();
         })
         .catch(err => {
             setPopupMessage("Có lỗi xảy ra, vui lòng thử lại sau");
             console.log(err);
         });
     }
+
+    const handlePurchaseCoins = () => {
+        window.location.href = '/purchase-coins'; // Redirect to purchase coins page
+    };
 
     const resetStates = () => {
         setEpisode(episodeStructure);
@@ -84,6 +104,7 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
         resetStates();
         fetchEpisode();
         checkOwnedEpisode();
+        fetchUserData();
     }, [episode_id]);
 
     const canAccessChapters = owned || username === publisherUsername;
@@ -154,8 +175,10 @@ const EpisodeInNovel = ({ episode_id, publisherUsername }) => {
                 showPopup && 
                 <PopupConfirm 
                     price={price}
+                    userCoins={userData ? userData.account_info.coin : 0}
                     onConfirm={handleConfirmPurchase}
                     onCancel={handleCancelPurchase}
+                    onPurchaseCoins={handlePurchaseCoins}
                     message={popupMessage}
                 />
             }

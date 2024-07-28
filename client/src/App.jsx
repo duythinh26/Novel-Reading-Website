@@ -22,6 +22,7 @@ import EpisodeList from './components/common/EpisodeList';
 import ManageEpisode from './components/common/ManageEpisode';
 import ChapterEditor from './components/common/ChapterEditor';
 import ReadPage from './components/pages/ReadPage';
+import PurchaseCoins from './components/common/PurchaseCoins';
 
 export const UserContext = createContext({})
 
@@ -54,6 +55,7 @@ const App = () => {
           <Route path='search' element={ <SearchPage /> } /> 
           <Route path='user/:id' element={ <ProfilePage /> } />
           <Route path='novel/:novel_id' element={ <NovelPage /> } />
+          <Route path='purchase-coins' element={ <PurchaseCoins /> } />
           <Route index element={ <Homepage /> } />
         </Route>
         <Route path='/signin' element={
