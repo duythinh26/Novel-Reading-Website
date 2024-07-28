@@ -23,6 +23,7 @@ import ManageEpisode from './components/common/ManageEpisode';
 import ChapterEditor from './components/common/ChapterEditor';
 import ReadPage from './components/pages/ReadPage';
 import PurchaseCoins from './components/common/PurchaseCoins';
+import PurchasedEpisodes from './components/common/PurchasedEpisodes';
 
 export const UserContext = createContext({})
 
@@ -85,6 +86,7 @@ const App = () => {
           <Route path='series/:novel_id/episode-list' element={ <EpisodeList /> }/>
           <Route path='series/episode/:episode_id' element={ <ManageEpisode /> }/>
           <Route path='series/manage/:episode_id/createchapter' element={ <ChapterEditor /> }/>
+          <Route path='bought-novel' element={ <PurchasedEpisodes /> }/>
         </Route>
         <Route path='/read/:chapter_id' element={ <ReadPage /> }></Route>
         {/* leave this tag at the end of the route / since the path of this route is all path */}

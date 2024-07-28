@@ -1205,13 +1205,54 @@ server.post("/get-chapter-episode-novel", async (req, res) => {
 
 server.get("/get-user-data", verifyJWT, async (req, res) => {
     try {
-      const user = await User.findById(req.user);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      return res.status(200).json({ user });
+        const user = await User.findById(req.user);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        return res.status(200).json({ user });
     } catch (err) {
-      return res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
+    }
+});
+
+server.get('/purchased-episodes', verifyJWT, async (req, res) => {
+    try {
+        // Find the user by ID, which is set by the verifyJWT middleware
+        const userId = req.user;
+    
+        // Fetch the user and populate the owned episodes
+        const user = await User.findById(userId).populate({
+            path: 'account_info.ownedEpisode',
+            model: 'episodes',
+            populate: {
+                path: 'belonged_to',
+                model: 'novels',
+                select: 'novel_id novel_title',
+            },
+        });
+    
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+    
+        // Extract the detailed episodes
+        const purchasedEpisodes = user.account_info.ownedEpisode.map((episode) => ({
+            _id: episode._id,
+            episode_title: episode.episode_title,
+            episode_banner: episode.episode_banner,
+            description: episode.description,
+            price: episode.price,
+            belonged_to: {
+                novel_id: episode.belonged_to.novel_id,
+                novel_title: episode.belonged_to.novel_title,
+            },
+        }));
+    
+        res.status(200).json({ purchasedEpisodes });
+    } catch (error) {
+        console.error('Error fetching purchased episodes:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
