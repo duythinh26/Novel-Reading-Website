@@ -1152,6 +1152,50 @@ server.post("/get-chapter", async (req, res) => {
     }
 });
 
+server.post("/get-chapter-episode-novel", async (req, res) => {
+    const { chapter_id } = req.body;
+
+    try {
+        // Find the chapter
+        const chapter = await Chapter.findById(chapter_id)
+            .populate("publisher", "personal_info.username personal_info.profile_img")
+            .populate("comments");
+
+        if (!chapter) {
+            return res.status(404).json({ error: 'Chapter not found' });
+        }
+
+        // Increase chapter's total reads
+        await Chapter.findByIdAndUpdate(chapter_id, { $inc: { "activity.total_reads": 1 } });
+
+        // Update user reads count
+        await User.findOneAndUpdate({ _id: chapter.publisher }, {
+            $inc: { "account_info.total_reads": 1 }
+        });
+
+        // Find the episode
+        const episode = await Episode.findById(chapter.belonged_to)
+            .populate("publisher", "personal_info.username personal_info.profile_img")
+            .populate("belonged_to"); // Populate the novel reference
+
+        if (!episode) {
+            return res.status(404).json({ error: 'Episode not found' });
+        }
+
+        // Find the novel
+        const novel = await Novel.findById(episode.belonged_to) // Use the novel reference from episode
+            .populate("publisher", "personal_info.username personal_info.profile_img");
+
+        if (!novel) {
+            return res.status(404).json({ error: 'Novel not found' });
+        }
+
+        return res.status(200).json({ chapter, episode, novel });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+});
+
 server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
