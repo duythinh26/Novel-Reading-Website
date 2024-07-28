@@ -72,6 +72,11 @@ const EditorNavbar = () => {
                                 </details>
                             </li>
                             <li>
+                                <Link to="/bought-novel" className="btn btn-ghost font-bold h-nav min-h-full content-center xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
+                                    <span>Truyện đã mua</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <details className="dropdown">
                                     <summary className="h-nav content-center font-bold xl:px-[14px] xl:py-[7px] lg:px-2 lg:py-0">
                                         Thảo luận

@@ -36,7 +36,9 @@ const NovelArticle = (content, publisher) => {
                         <h4 className="font-bold mb-[10px] overflow-hidden text-ellipsis whitespace-nowrap ">
                             <a href={`/novel/${content.content.novel_id}`} className="hover:text-green hover:outline-0 text-2xl no-underline">{content.content.novel_title}</a>
                         </h4>
-                        <div className="text-breakword line-clamp-4 mb-[10px]">{content.content.description}</div>
+                        <div 
+                            className="text-breakword line-clamp-4 mb-[10px]"
+                            dangerouslySetInnerHTML={{ __html: content.content.description }}></div>
                     </div>
                 </div>
             </div>

@@ -43,6 +43,11 @@ const UserNavigation = ({ coins }) => {
                 </Link>
             </li>
             <p className="font-bold text-base p-3 w-full float-left justify-start border-none">Coins: {coins}</p>
+            <li>
+                <Link to="/purchase-coins"className="btn btn-ghost font-bold text-base p-3 w-full float-left justify-start border-none">
+                    <i className="fi fi-rr-coins"></i> Mua xu
+                </Link>
+            </li>
             <div className="relative w-full flex items-center gap-2 py-4 opacity-20 uppercase text-black font-bold">
                 <hr className="w-full border-black"/>
             </div>
