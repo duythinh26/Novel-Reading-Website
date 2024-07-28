@@ -19,6 +19,9 @@ let PORT = 3000;
 
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/; 
+let cardNumberRegex = /^\d{16}$/;
+let expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+let cvvRegex = /^\d{3,4}$/;
 
 // Enable json sharing in order to accept the json data
 server.use(express.json());
@@ -911,34 +914,38 @@ server.post("/get-episode-by-publisher", verifyJWT, async (req, res) => {
     }
 });
 
-server.post("/buy-coins", async (req, res) => {
-    let {
-        user_id,
-        card_number,
-        card_expiry,
-        card_cvv,
-        amount
-    } = req.body;
+server.post('/purchase-coins', verifyJWT, async (req, res) => {
+    const { coin_ammount, card_number, expiry_date, cvv } = req.body;
 
-    if (!card_number || !card_expiry || !card_cvv) {
-        return res.status(400).json({ error: 'Inavlid credit card information' });
+    if (!coin_ammount || coin_ammount <= 0) {
+        return res.status(400).json({ error: 'Số lượng xu không hợp lệ' });
+    }
+    if (!card_number || !cardNumberRegex.test(card_number)) {
+        return res.status(400).json({ error: 'Số thẻ tín dụng không hợp lệ' });
+    }
+    if (!expiry_date || !expiryDateRegex.test(expiry_date)) {
+        return res.status(400).json({ error: 'Ngày hết hạn thẻ không hợp lệ' });
+    }
+    if (!cvv || !cvvRegex.test(cvv)) {
+        return res.status(400).json({ error: 'Mã CVV không hợp lệ' });
     }
 
     try {
-        const user = await User.findById(user_id);
+        const user = await User.findById(req.user);
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'Người dùng không tồn tại' });
         }
 
-        user.account_info.coin += amount;
+        user.account_info.coin += Number(coin_ammount);
         await user.save();
 
-        return res.status(200).json({ message: 'Coins purchased successfully', user });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(200).json({ message: 'Mua xu thành công', totalCoins: user.account_info.coin });
+    } catch (err) {
+        console.error('Lỗi khi mua xu:', err);
+        res.status(500).json({ error: 'Lỗi máy chủ nội bộ' });
     }
-})
+});
 
 server.post("/purchase-episode", verifyJWT, async (req, res) => {
     const user_id = req.user;
@@ -1193,6 +1200,18 @@ server.post("/get-chapter-episode-novel", async (req, res) => {
         return res.status(200).json({ chapter, episode, novel });
     } catch (err) {
         return res.status(500).json({ error: err.message });
+    }
+});
+
+server.get("/get-user-data", verifyJWT, async (req, res) => {
+    try {
+      const user = await User.findById(req.user);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      return res.status(200).json({ user });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
     }
 });
 
