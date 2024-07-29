@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom';
 import { userDataStructure } from '../common/userDataStructure';
 import { UserContext } from '../../App';
 import AboutUser from '../common/AboutUser';
-import { filterPaginationData } from '../common/FilterPaginationData';
 import NovelInProfile from '../common/NovelInProfile';
 import defaultCover from "../../assets/images/user-cover.gif"
 import PageNotFound from './PageNotFound';
+import filterPaginationData from '../common/FilterPaginationData';
 
 export const profileDataStructure = {
     personal_info: {

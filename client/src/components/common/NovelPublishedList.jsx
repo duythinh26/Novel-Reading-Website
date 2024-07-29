@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../App';
 import axios from 'axios';
-import { filterPaginationData } from './FilterPaginationData';
 import { Toaster, toast } from 'react-hot-toast';
 import NoDataMessage from './NoDataMessage';
 import NovelPublishedCard from './NovelPublishedCard';
+import filterPaginationData from './FilterPaginationData';
 
 const NovelPublishedList = () => {
 
